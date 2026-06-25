@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:16
+    container_name: ktrend-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ktrend
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    container_name: ktrend-app
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/ktrend
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    command: >
+      sh -c "
+      npm run db:migrate &&
+      if [ \"$SEED_ON_BOOT\" = \"true\" ]; then npm run db:seed; fi &&
+      npm run dev
+      "
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  worker:
+    build:
+      context: .
+    container_name: ktrend-worker
+    restart: unless-stopped
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/ktrend
+    command: >
+      sh -c "
+      npm run db:migrate &&
+      npm run worker
+      "
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  postgres-data:
+

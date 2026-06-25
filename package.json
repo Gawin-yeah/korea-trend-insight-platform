@@ -1,0 +1,43 @@
+{
+  "name": "korea-trend-insight-platform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vinext dev",
+    "build": "vinext build",
+    "start": "vinext start",
+    "lint": "tsc --noEmit",
+    "db:migrate": "node --import tsx scripts/migrate.ts",
+    "db:seed": "node --import tsx db/seed.ts",
+    "worker": "node --import tsx scripts/worker.ts",
+    "test:sources": "node --import tsx scripts/test-sources.ts",
+    "import:signals": "node --import tsx scripts/import-public-signals.ts"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "drizzle-orm": "0.45.2",
+    "next": "16.2.6",
+    "node-cron": "^4.1.0",
+    "openai": "^4.103.0",
+    "pg": "^8.16.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@tailwindcss/postcss": "^4.1.10",
+    "@types/node": "22.19.19",
+    "@types/pg": "^8.15.2",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.10",
+    "tsx": "^4.20.1",
+    "typescript": "5.9.3",
+    "vinext": "0.0.50",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "type": "module"
+}
