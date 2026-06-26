@@ -20,7 +20,8 @@ import type {
   TrendDetail,
   TrendListFilters,
   TrendMention,
-  TrendSignal
+  TrendSignal,
+  TrendSourceLink
 } from "@/types/trend";
 
 function mapCluster(row: Record<string, unknown>): TrendCluster {
@@ -149,6 +150,90 @@ function mapEvidence(row: Record<string, unknown>): EvidenceRecord {
   };
 }
 
+function buildSourceLinks(input: {
+  mentions: TrendMention[];
+  signals: TrendSignal[];
+  evidences: EvidenceRecord[];
+}): TrendSourceLink[] {
+  const links = new Map<string, TrendSourceLink>();
+
+  for (const mention of input.mentions) {
+    const title =
+      mention.sourceTitle ||
+      mention.sourceAuthorName ||
+      mention.sourceAuthorHandle ||
+      mention.originalText.slice(0, 36);
+    const key = `mention:${mention.sourceUrl}`;
+    if (!links.has(key)) {
+      links.set(key, {
+        id: mention.id,
+        sourceType: "mention",
+        sourcePlatform: mention.sourcePlatform,
+        sourceUrl: mention.sourceUrl,
+        title,
+        subtitle: mention.originalText,
+        collectedAt: mention.collectedAt
+      });
+    }
+  }
+
+  for (const signal of input.signals) {
+    const key = `public_signal:${signal.sourceUrl}:${signal.signalTitle}`;
+    if (!links.has(key)) {
+      links.set(key, {
+        id: signal.id,
+        sourceType: "public_signal",
+        sourcePlatform: signal.sourcePlatform,
+        sourceUrl: signal.sourceUrl,
+        title: signal.signalTitle,
+        subtitle: signal.summary,
+        collectedAt: signal.collectedAt
+      });
+    }
+  }
+
+  for (const evidence of input.evidences) {
+    const key = `evidence:${evidence.sourceUrl}:${evidence.headline}`;
+    if (!links.has(key)) {
+      links.set(key, {
+        id: evidence.id,
+        sourceType: "evidence",
+        sourcePlatform: evidence.sourcePlatform,
+        sourceUrl: evidence.sourceUrl,
+        title: evidence.headline,
+        subtitle: evidence.excerpt,
+        collectedAt: evidence.capturedAt
+      });
+    }
+  }
+
+  return Array.from(links.values()).sort(
+    (a, b) => new Date(b.collectedAt).getTime() - new Date(a.collectedAt).getTime()
+  );
+}
+
+function withTopSourceLinks(
+  clusters: TrendCluster[],
+  input: {
+    mentions: TrendMention[];
+    signals: TrendSignal[];
+    evidences: EvidenceRecord[];
+  }
+) {
+  return clusters.map((cluster) => {
+    const topSourceLinks = buildSourceLinks({
+      mentions: input.mentions.filter((item) => item.clusterSlug === cluster.slug),
+      signals: input.signals.filter((item) => item.clusterSlug === cluster.slug),
+      evidences: input.evidences.filter((item) => item.clusterSlug === cluster.slug)
+    }).slice(0, 3);
+
+    return {
+      ...cluster,
+      topSourceLinks
+    };
+  });
+}
+
 function applyFilters(data: TrendCluster[], filters: TrendListFilters) {
   const filtered = data.filter((item) => {
     const matchesCategory = !filters.category || item.primaryCategory === filters.category;
@@ -210,24 +295,32 @@ function buildPublicSignalSummary(signals: TrendSignal[]) {
 
 function buildDashboardFromMemory(
   clusters: TrendCluster[],
-  signals: TrendSignal[]
+  signals: TrendSignal[],
+  mentions: TrendMention[] = [],
+  evidences: EvidenceRecord[] = []
 ): DashboardData {
-  const top50 = [...clusters].sort((a, b) => b.trendScore - a.trendScore).slice(0, 50);
-  const fastestRising = [...clusters]
+  const clustersWithLinks = withTopSourceLinks(clusters, {
+    mentions,
+    signals,
+    evidences
+  });
+
+  const top50 = [...clustersWithLinks].sort((a, b) => b.trendScore - a.trendScore).slice(0, 50);
+  const fastestRising = [...clustersWithLinks]
     .sort((a, b) => b.growthScore - a.growthScore)
     .slice(0, 5);
 
   const categories = Object.fromEntries(
     appConfig.categories.map((category) => [
       category,
-      applyFilters(clusters, { category, limit: 5 })
+      applyFilters(clustersWithLinks, { category, limit: 5 })
     ])
   ) as DashboardData["categoryBoards"];
 
   const commercializationBoards = Object.fromEntries(
     appConfig.categories.map((category) => [
       category,
-      applyFilters(clusters, {
+      applyFilters(clustersWithLinks, {
         category,
         limit: 5,
         sort: "commercial_potential_score"
@@ -237,11 +330,11 @@ function buildDashboardFromMemory(
 
   const lifecycleSummary = ["emerging", "breakout", "steady", "cooling"].map((lifecycle) => ({
     lifecycle: lifecycle as DashboardData["lifecycleSummary"][number]["lifecycle"],
-    count: clusters.filter((item) => item.lifecycle === lifecycle).length
+    count: clustersWithLinks.filter((item) => item.lifecycle === lifecycle).length
   }));
 
   const platformCounts = new Map<string, number>();
-  for (const cluster of clusters) {
+  for (const cluster of clustersWithLinks) {
     for (const platform of cluster.sourcePlatforms) {
       platformCounts.set(platform, (platformCounts.get(platform) || 0) + 1);
     }
@@ -258,18 +351,18 @@ function buildDashboardFromMemory(
       platform: platform as DashboardData["platformSummary"][number]["platform"],
       count
     })),
-    evidenceCoverageSummary: buildEvidenceCoverageSummary(clusters),
+    evidenceCoverageSummary: buildEvidenceCoverageSummary(clustersWithLinks),
     publicSignalSummary: buildPublicSignalSummary(signals)
   };
 }
 
 export async function getDashboardData(): Promise<DashboardData> {
   if (!isDatabaseConfigured()) {
-    return buildDashboardFromMemory(seedClusters, seedSignals);
+    return buildDashboardFromMemory(seedClusters, seedSignals, seedMentions, seedEvidences);
   }
 
   try {
-    const [clusterResult, signalResult] = await Promise.all([
+    const [clusterResult, signalResult, mentionResult, evidenceResult] = await Promise.all([
       query("SELECT * FROM trend_clusters ORDER BY trend_score DESC LIMIT 50"),
       query(
         `
@@ -277,20 +370,46 @@ export async function getDashboardData(): Promise<DashboardData> {
           FROM trend_public_signals tps
           JOIN trend_clusters tc ON tc.id = tps.cluster_id
         `
+      ),
+      query(
+        `
+          SELECT tm.*, tc.slug AS cluster_slug
+          FROM trend_mentions tm
+          JOIN trend_cluster_mentions tcm ON tcm.mention_id = tm.id
+          JOIN trend_clusters tc ON tc.id = tcm.cluster_id
+          ORDER BY tm.collected_at DESC
+        `
+      ),
+      query(
+        `
+          SELECT tei.*, tc.slug AS cluster_slug
+          FROM trend_evidence_items tei
+          JOIN trend_clusters tc ON tc.id = tei.cluster_id
+          ORDER BY tei.captured_at DESC
+        `
       )
     ]);
 
     const clusters = clusterResult.rows.map((row) => mapCluster(row as Record<string, unknown>));
     const signals = signalResult.rows.map((row) => mapSignal(row as Record<string, unknown>));
-    return buildDashboardFromMemory(clusters, signals);
+    const mentions = mentionResult.rows.map((row) => mapMention(row as Record<string, unknown>));
+    const evidences = evidenceResult.rows.map((row) => mapEvidence(row as Record<string, unknown>));
+    return buildDashboardFromMemory(clusters, signals, mentions, evidences);
   } catch {
-    return buildDashboardFromMemory(seedClusters, seedSignals);
+    return buildDashboardFromMemory(seedClusters, seedSignals, seedMentions, seedEvidences);
   }
 }
 
 export async function listTrends(filters: TrendListFilters = {}) {
   if (!isDatabaseConfigured()) {
-    return applyFilters(seedClusters, filters);
+    return applyFilters(
+      withTopSourceLinks(seedClusters, {
+        mentions: seedMentions,
+        signals: seedSignals,
+        evidences: seedEvidences
+      }),
+      filters
+    );
   }
 
   try {
@@ -330,9 +449,56 @@ export async function listTrends(filters: TrendListFilters = {}) {
       values
     );
 
-    return result.rows.map((row) => mapCluster(row as Record<string, unknown>));
+    const clusters = result.rows.map((row) => mapCluster(row as Record<string, unknown>));
+    const slugs = clusters.map((item) => item.slug);
+    const [mentionResult, signalResult, evidenceResult] = await Promise.all([
+      query(
+        `
+          SELECT tm.*, tc.slug AS cluster_slug
+          FROM trend_mentions tm
+          JOIN trend_cluster_mentions tcm ON tcm.mention_id = tm.id
+          JOIN trend_clusters tc ON tc.id = tcm.cluster_id
+          WHERE tc.slug = ANY($1::text[])
+          ORDER BY tm.collected_at DESC
+        `,
+        [slugs]
+      ),
+      query(
+        `
+          SELECT tps.*, tc.slug AS cluster_slug
+          FROM trend_public_signals tps
+          JOIN trend_clusters tc ON tc.id = tps.cluster_id
+          WHERE tc.slug = ANY($1::text[])
+          ORDER BY tps.collected_at DESC
+        `,
+        [slugs]
+      ),
+      query(
+        `
+          SELECT tei.*, tc.slug AS cluster_slug
+          FROM trend_evidence_items tei
+          JOIN trend_clusters tc ON tc.id = tei.cluster_id
+          WHERE tc.slug = ANY($1::text[])
+          ORDER BY tei.captured_at DESC
+        `,
+        [slugs]
+      )
+    ]);
+
+    return withTopSourceLinks(clusters, {
+      mentions: mentionResult.rows.map((row) => mapMention(row as Record<string, unknown>)),
+      signals: signalResult.rows.map((row) => mapSignal(row as Record<string, unknown>)),
+      evidences: evidenceResult.rows.map((row) => mapEvidence(row as Record<string, unknown>))
+    });
   } catch {
-    return applyFilters(seedClusters, filters);
+    return applyFilters(
+      withTopSourceLinks(seedClusters, {
+        mentions: seedMentions,
+        signals: seedSignals,
+        evidences: seedEvidences
+      }),
+      filters
+    );
   }
 }
 
@@ -343,12 +509,22 @@ export async function getTrendDetail(slug: string): Promise<TrendDetail | null> 
       return null;
     }
 
+    const mentions = seedMentions.filter((item) => item.clusterSlug === slug);
+    const metrics = seedMetrics.filter((item) => item.clusterSlug === slug);
+    const signals = seedSignals.filter((item) => item.clusterSlug === slug);
+    const evidences = seedEvidences.filter((item) => item.clusterSlug === slug);
+
     return {
       ...cluster,
-      mentions: seedMentions.filter((item) => item.clusterSlug === slug),
-      metrics: seedMetrics.filter((item) => item.clusterSlug === slug),
-      signals: seedSignals.filter((item) => item.clusterSlug === slug),
-      evidences: seedEvidences.filter((item) => item.clusterSlug === slug)
+      mentions,
+      metrics,
+      signals,
+      evidences,
+      sourceLinks: buildSourceLinks({
+        mentions,
+        signals,
+        evidences
+      })
     };
   }
 
@@ -416,12 +592,22 @@ export async function getTrendDetail(slug: string): Promise<TrendDetail | null> 
       [slug]
     );
 
+    const mentions = mentionResult.rows.map((row) => mapMention(row as Record<string, unknown>));
+    const metrics = metricResult.rows.map((row) => mapMetric(row as Record<string, unknown>));
+    const signals = signalResult.rows.map((row) => mapSignal(row as Record<string, unknown>));
+    const evidences = evidenceResult.rows.map((row) => mapEvidence(row as Record<string, unknown>));
+
     return {
       ...mapCluster(clusterRow as Record<string, unknown>),
-      mentions: mentionResult.rows.map((row) => mapMention(row as Record<string, unknown>)),
-      metrics: metricResult.rows.map((row) => mapMetric(row as Record<string, unknown>)),
-      signals: signalResult.rows.map((row) => mapSignal(row as Record<string, unknown>)),
-      evidences: evidenceResult.rows.map((row) => mapEvidence(row as Record<string, unknown>))
+      mentions,
+      metrics,
+      signals,
+      evidences,
+      sourceLinks: buildSourceLinks({
+        mentions,
+        signals,
+        evidences
+      })
     };
   } catch {
     const cluster = seedClusters.find((item) => item.slug === slug);
@@ -429,18 +615,42 @@ export async function getTrendDetail(slug: string): Promise<TrendDetail | null> 
       return null;
     }
 
+    const mentions = seedMentions.filter((item) => item.clusterSlug === slug);
+    const metrics = seedMetrics.filter((item) => item.clusterSlug === slug);
+    const signals = seedSignals.filter((item) => item.clusterSlug === slug);
+    const evidences = seedEvidences.filter((item) => item.clusterSlug === slug);
+
     return {
       ...cluster,
-      mentions: seedMentions.filter((item) => item.clusterSlug === slug),
-      metrics: seedMetrics.filter((item) => item.clusterSlug === slug),
-      signals: seedSignals.filter((item) => item.clusterSlug === slug),
-      evidences: seedEvidences.filter((item) => item.clusterSlug === slug)
+      mentions,
+      metrics,
+      signals,
+      evidences,
+      sourceLinks: buildSourceLinks({
+        mentions,
+        signals,
+        evidences
+      })
     };
   }
 }
 
 export async function exportTrends() {
   return listTrends({ limit: 100 });
+}
+
+export async function exportTrendSourceLinks(slug: string) {
+  const detail = await getTrendDetail(slug);
+
+  if (!detail) {
+    return null;
+  }
+
+  return {
+    slug: detail.slug,
+    primaryTermKo: detail.primaryTermKo,
+    sourceLinks: detail.sourceLinks
+  };
 }
 
 export async function listSourceCapabilities(): Promise<SourceCapability[]> {

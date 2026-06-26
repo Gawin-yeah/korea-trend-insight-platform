@@ -18,7 +18,18 @@ export function PublicTrendSiteCard({ site }: { site: PublicTrendSite }) {
       {site.regionHint ? (
         <p className="mt-2 text-xs uppercase tracking-[0.2em] text-cyan-200">{site.regionHint}</p>
       ) : null}
+      {site.officialUrl ? (
+        <div className="mt-5">
+          <a
+            href={site.officialUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/[0.08] px-4 py-2 text-sm text-cyan-100 transition hover:border-cyan-300/50"
+          >
+            打开官方趋势页
+          </a>
+        </div>
+      ) : null}
     </div>
   );
 }
-

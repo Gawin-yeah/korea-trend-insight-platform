@@ -43,3 +43,25 @@ export const platformLabels = {
   manual_research: "人工研究",
   other: "其他"
 } as const;
+
+export const platformAbbreviations = {
+  youtube: "YT",
+  youtube_charts: "YC",
+  instagram_authorized: "IG",
+  threads_authorized: "TH",
+  x_api: "X",
+  tiktok_authorized: "TT",
+  tiktok_creative_center: "TC",
+  naver: "NV",
+  naver_datalab: "ND",
+  google_trends: "GT",
+  manual_seed: "SD",
+  manual_research: "MR",
+  other: "OT"
+} as const;
+
+export const sourceTypeLabels = {
+  mention: "原始提及",
+  public_signal: "公开信号",
+  evidence: "人工证据"
+} as const;

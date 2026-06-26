@@ -419,14 +419,24 @@ async function upsertPublicSignal(signal: PublicSignalCandidate) {
 
 export async function runPublicSignalImportJob() {
   if (!isDatabaseConfigured()) {
+    const importerResults: Array<{ platform: Platform; importedCount: number }> = [];
+    let importedCount = 0;
+
+    for (const importer of publicSignalImporterRegistry) {
+      const signals = await importer.importSignals();
+      importedCount += signals.length;
+      importerResults.push({
+        platform: importer.name,
+        importedCount: signals.length
+      });
+    }
+
     return {
       source: "public_signal_snapshots",
-      importedCount: 0,
-      importers: publicSignalImporterRegistry.map((importer) => ({
-        platform: importer.name,
-        importedCount: 0
-      })),
-      message: "DATABASE_URL not configured. Public signal import is available after PostgreSQL is connected."
+      importedCount,
+      importers: importerResults,
+      message:
+        "当前为本地预览模式：公开趋势快照已完成模拟导入，但不会持久化到 PostgreSQL。"
     };
   }
 

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { AdminTable } from "@/components/admin-table";
+import Link from "next/link";
 import { listTrends } from "@/lib/repositories/trends";
 
 export const dynamic = "force-dynamic";
@@ -17,18 +17,18 @@ export default async function AdminPage() {
         </p>
         <div className="mt-5">
           <div className="flex flex-wrap gap-3">
-            <a
+            <Link
               href="/admin/sources"
               className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/[0.08] px-4 py-2 text-sm text-cyan-100"
             >
               进入数据源配置
-            </a>
-            <a
+            </Link>
+            <Link
               href="/admin/evidence"
               className="inline-flex rounded-full border border-amber-300/30 bg-amber-300/[0.08] px-4 py-2 text-sm text-amber-100"
             >
               进入人工证据后台
-            </a>
+            </Link>
           </div>
         </div>
         <div className="mt-6">

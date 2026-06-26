@@ -1,7 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MiniLineChart } from "@/components/mini-line-chart";
-import { lifecycleLabels, platformLabels } from "@/lib/config";
+import {
+  lifecycleLabels,
+  platformAbbreviations,
+  platformLabels,
+  sourceTypeLabels
+} from "@/lib/config";
 import { getTrendDetail } from "@/lib/repositories/trends";
 
 export const dynamic = "force-dynamic";
@@ -83,6 +88,28 @@ export default async function TrendDetailPage({
               <div>
                 <p className="text-slate-400">风险等级</p>
                 <p className="mt-1 text-white">{detail.riskLevel}</p>
+              </div>
+            </div>
+            <div className="mt-5">
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="#source-links"
+                  className="inline-flex rounded-full border border-cyan-300/30 bg-slate-950/30 px-4 py-2 text-sm text-cyan-100"
+                >
+                  查看这条热点的全部来源链接
+                </a>
+                <a
+                  href={`/api/export?format=json&slug=${detail.slug}&scope=source_links`}
+                  className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-100"
+                >
+                  导出链接 JSON
+                </a>
+                <a
+                  href={`/api/export?format=csv&slug=${detail.slug}&scope=source_links`}
+                  className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-100"
+                >
+                  导出链接 CSV
+                </a>
               </div>
             </div>
           </div>
@@ -177,6 +204,61 @@ export default async function TrendDetailPage({
               </a>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section
+        id="source-links"
+        className="mt-10 rounded-[32px] border border-white/10 bg-white/5 p-6"
+      >
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold text-white">原始链接清单</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+              这里把这条热点对应的公开趋势信号、原始提及和人工证据全部拆开列出，方便你逐条点开核对。
+            </p>
+          </div>
+          <div className="rounded-full border border-cyan-300/30 bg-cyan-300/[0.08] px-4 py-2 text-sm text-cyan-100">
+            共 {detail.sourceLinks.length} 条链接
+          </div>
+        </div>
+        <div className="mt-5 grid gap-4">
+          {detail.sourceLinks.map((item) => (
+            <a
+              key={`${item.sourceType}-${item.id}`}
+              href={item.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block rounded-[24px] border border-white/10 bg-black/10 p-4"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="max-w-3xl">
+                  <p className="text-sm font-medium text-white">{item.title}</p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {platformLabels[item.sourcePlatform]} · {sourceTypeLabels[item.sourceType]} ·{" "}
+                    {new Date(item.collectedAt).toLocaleString("zh-CN", {
+                      hour12: false
+                    })}
+                  </p>
+                  {item.subtitle ? (
+                    <p className="mt-3 text-sm leading-7 text-slate-200">{item.subtitle}</p>
+                  ) : null}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-cyan-100">
+                    {platformAbbreviations[item.sourcePlatform]}
+                  </span>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">
+                    {sourceTypeLabels[item.sourceType]}
+                  </span>
+                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-cyan-100">
+                    打开原链接
+                  </span>
+                </div>
+              </div>
+              <p className="mt-3 break-all text-xs text-slate-500">{item.sourceUrl}</p>
+            </a>
+          ))}
         </div>
       </section>
 

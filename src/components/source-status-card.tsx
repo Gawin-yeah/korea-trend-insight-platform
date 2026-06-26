@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import type { SourceCapability } from "@/types/trend";
 
 const statusStyles = {
@@ -65,6 +66,24 @@ export function SourceStatusCard({ source }: { source: SourceCapability }) {
             </span>
           )}
         </div>
+      </div>
+      <div className="mt-5 flex flex-wrap gap-3">
+        {source.docsUrl ? (
+          <a
+            href={source.docsUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/[0.08] px-4 py-2 text-sm text-cyan-100"
+          >
+            查看官方文档
+          </a>
+        ) : null}
+        <Link
+          href="/admin/sources"
+          className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
+        >
+          前往数据源配置
+        </Link>
       </div>
     </div>
   );

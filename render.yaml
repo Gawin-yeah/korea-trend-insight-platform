@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: korea-trend-insight-platform
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.prod
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SEED_ON_BOOT
+        value: "false"
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
+      - key: YOUTUBE_REGION_CODE
+        value: KR
+      - key: NAVER_SEARCH_DISPLAY
+        value: "10"
+      - key: OPENAI_MODEL
+        value: gpt-4.1-mini

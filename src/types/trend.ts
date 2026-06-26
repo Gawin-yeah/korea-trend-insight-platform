@@ -67,6 +67,7 @@ export interface TrendCluster {
   evidenceCompletenessScore: number;
   reviewStatus: ReviewStatus;
   reviewNotes?: string | null;
+  topSourceLinks?: TrendSourceLink[];
 }
 
 export interface TrendMention {
@@ -133,11 +134,22 @@ export interface EvidenceRecord {
   status: "pending" | "verified" | "rejected";
 }
 
+export interface TrendSourceLink {
+  id: string;
+  sourceType: "mention" | "public_signal" | "evidence";
+  sourcePlatform: Platform;
+  sourceUrl: string;
+  title: string;
+  subtitle?: string;
+  collectedAt: string;
+}
+
 export interface TrendDetail extends TrendCluster {
   mentions: TrendMention[];
   metrics: TrendDailyMetric[];
   signals: TrendSignal[];
   evidences: EvidenceRecord[];
+  sourceLinks: TrendSourceLink[];
 }
 
 export interface TrendListFilters {
@@ -180,6 +192,7 @@ export interface SourceCapability {
   availableEnv: string[];
   legalBoundary: string;
   notes: string;
+  docsUrl?: string;
 }
 
 export interface PublicTrendSite {
@@ -191,4 +204,5 @@ export interface PublicTrendSite {
   bestFor: string[];
   limitations: string;
   regionHint?: string;
+  officialUrl?: string;
 }

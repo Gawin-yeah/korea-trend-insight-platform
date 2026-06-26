@@ -26,12 +26,44 @@
 
 ## 快速开始
 
-### 1. 配置环境变量
+### 1. 本地 Demo 模式
+不需要 PostgreSQL，也不需要任何平台凭证，直接用内置种子数据预览整站。
+
+```bash
+cp .env.demo.example .env.demo
+docker compose -f docker-compose.demo.yml up --build
+```
+
+或者直接用本机 Node：
+
+```bash
+npm install
+npm run dev
+```
+
+启动后访问：
+- Dashboard: [http://localhost:3000](http://localhost:3000)
+- 管理后台: [http://localhost:3000/admin](http://localhost:3000/admin)
+- 数据源后台: [http://localhost:3000/admin/sources](http://localhost:3000/admin/sources)
+- 证据后台: [http://localhost:3000/admin/evidence](http://localhost:3000/admin/evidence)
+
+如果 `3000` 端口已被占用，可以改用：
+
+```bash
+npm run dev -- --port 3001
+```
+
+### 2. 完整本地模式
+需要 PostgreSQL，适合验证迁移、seed、人工补证据持久化与定时任务。
+
+### 2.1 配置环境变量
 ```bash
 cp .env.example .env
 ```
 
-### 2. 使用 Docker Compose
+把 `DATABASE_URL` 改成你本机 Postgres，或直接使用下面的 Docker Compose 完整栈。
+
+### 2.2 使用 Docker Compose
 ```bash
 docker compose up --build
 ```
@@ -41,7 +73,7 @@ docker compose up --build
 - 管理后台: [http://localhost:3000/admin](http://localhost:3000/admin)
 - 证据后台: [http://localhost:3000/admin/evidence](http://localhost:3000/admin/evidence)
 
-### 3. 本地 Node 开发
+### 2.3 本地 Node 开发
 ```bash
 npm install
 npm run db:migrate
@@ -49,12 +81,12 @@ npm run db:seed
 npm run dev
 ```
 
-### 4. 手动触发采集
+### 3. 手动触发采集
 ```bash
 curl -X POST http://localhost:3000/api/ingestion/run
 ```
 
-### 5. 测试数据源连通性
+### 4. 测试数据源连通性
 ```bash
 npm run test:sources
 npm run test:sources -- youtube
@@ -64,7 +96,7 @@ npm run test:sources -- x_api
 npm run test:sources -- naver
 ```
 
-### 6. 导入公开趋势信号
+### 5. 导入公开趋势信号
 ```bash
 npm run import:signals
 ```
@@ -72,6 +104,8 @@ npm run import:signals
 或者在后台打开：
 - [http://localhost:3000/admin/sources](http://localhost:3000/admin/sources)
 - 点击“`一键导入公开信号`”
+
+如果当前没有配置 PostgreSQL，按钮会进入“预览导入模式”，返回各公开信号导入器的模拟导入数量，但不会落库。
 
 ## 合法数据接入说明
 - Instagram 仅支持官方 API、授权商业或创作者账号。
@@ -115,5 +149,8 @@ docs/                PRD 与架构文档
 
 ## 说明
 - `docs/prd.md` 包含 PRD、schema 设计、系统架构文字图、API 设计、目录结构与 MVP 计划。
+- `docs/deployment.md` 包含本地 Demo、完整 Docker 栈、环境变量和上线前检查清单。
+- `docs/deploy-github.md` 提供不依赖 GPT/Sites 的 GitHub 上线方案，包含 VPS / Railway / Render 三条路线。
+- `docs/deploy-render-free.md` 提供单人可用、低成本的 Render 免费正式站部署方案。
 - 首次启动会根据 `SEED_ON_BOOT` 自动写入种子数据，便于直接查看 UI。
 - 首批韩语趋势关键词种子统一定义在 [src/lib/keywords/kr-seeds.ts](/Users/gawin/Documents/Codex/2026-06-24/sites-plugin-sites-openai-bundled/src/lib/keywords/kr-seeds.ts)。
