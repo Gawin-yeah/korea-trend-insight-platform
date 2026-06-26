@@ -10,7 +10,6 @@
 - `db/`
 - `scripts/`
 - `docs/`
-- `.github/`
 - `Dockerfile.prod`
 - `docker-compose.prod.yml`
 - `.env.example`
@@ -36,8 +35,6 @@ git push -u origin main
 
 ## 上传后你会得到什么
 - 一个可继续开发的网站仓库
-- GitHub Actions CI
-- VPS 自动部署工作流骨架
 - 本地 demo / Docker / 生产部署配置
 
 ## 后续上线文档

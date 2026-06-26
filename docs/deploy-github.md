@@ -21,8 +21,6 @@
 ## 方案 A：GitHub + VPS
 
 ### 仓库里已经准备好的文件
-- `.github/workflows/ci.yml`
-- `.github/workflows/deploy-vps.yml`
 - `Dockerfile.prod`
 - `docker-compose.prod.yml`
 - `deploy/Caddyfile`
@@ -46,15 +44,6 @@
 ```bash
 docker compose -f docker-compose.prod.yml up -d --build
 ```
-
-### GitHub 自动部署
-仓库里已经带了 `deploy-vps.yml`，你只需要在 GitHub 仓库里配置 Secrets：
-
-- `VPS_HOST`
-- `VPS_USER`
-- `VPS_SSH_KEY`
-
-之后每次 push 到 `main`，GitHub Actions 都会把代码同步到服务器并重启容器。
 
 ## 方案 B：GitHub + Railway
 
