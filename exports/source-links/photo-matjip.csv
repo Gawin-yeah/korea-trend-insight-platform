@@ -1,0 +1,4 @@
+id,sourceType,sourcePlatform,sourceUrl,title,subtitle,collectedAt
+ffff6666-6666-4666-8666-666666666666,mention,naver,https://search.naver.com/search.naver?query=%EC%82%AC%EC%A7%84%EB%A7%9B%EC%A7%91+%EC%B9%B4%ED%8E%98,서울 사진맛집 카페,이 카페는 커피도 괜찮은데 사진맛집이라 주말마다 줄 서,2026-06-24T08:00:00.000Z
+sig-6661,public_signal,naver_datalab,https://datalab.naver.com/,Photogenic cafe search cluster,出片咖啡店和打卡路线关键词在周末周期性升温。,2026-06-24T08:00:00.000Z
+ev-6661,evidence,manual_research,https://search.naver.com/search.naver?query=%EC%82%AC%EC%A7%84%EB%A7%9B%EC%A7%91+%EC%B9%B4%ED%8E%98,照片打卡路线证据包,含 4 个公开打卡点链接和两条用户评论摘录。,2026-06-24T08:00:00.000Z

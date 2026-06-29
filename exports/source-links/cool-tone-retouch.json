@@ -1,0 +1,33 @@
+{
+  "slug": "cool-tone-retouch",
+  "primaryTermKo": "쿨톤 보정",
+  "sourceLinks": [
+    {
+      "id": "cccc3333-3333-4333-8333-333333333333",
+      "sourceType": "mention",
+      "sourcePlatform": "youtube",
+      "sourceUrl": "https://www.youtube.com/results?search_query=%EC%BF%A8%ED%86%A4+%EB%B3%B4%EC%A0%95+%ED%85%9C%ED%94%8C%EB%A6%BF",
+      "title": "쿨톤 보정 템플릿",
+      "subtitle": "쿨톤 보정 프리셋 하나로 인생네컷 분위기까지 맞출 수 있어",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "sig-3331",
+      "sourceType": "public_signal",
+      "sourcePlatform": "tiktok_creative_center",
+      "sourceUrl": "https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/en?countryCode=KR",
+      "title": "Filter template cluster",
+      "subtitle": "公开趋势页里滤镜、色感、模板关键词被反复关联。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "ev-3331",
+      "sourceType": "evidence",
+      "sourcePlatform": "manual_research",
+      "sourceUrl": "https://search.naver.com/search.naver?query=%EC%BF%A8%ED%86%A4+%EB%B3%B4%EC%A0%95",
+      "title": "修图模板界面截图归档",
+      "subtitle": "研究员保存了两套冷调模板的参数截图与教程片段。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    }
+  ]
+}

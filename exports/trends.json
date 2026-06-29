@@ -1,0 +1,575 @@
+[
+  {
+    "id": "44444444-4444-4444-8444-444444444444",
+    "slug": "ai-id-photo",
+    "primaryTermKo": "AI 증명사진",
+    "romanization": "ai jeungmyeong sajin",
+    "zhExplanation": "使用 AI 自动生成或优化韩式证件照与职业头像的玩法。",
+    "enExplanation": "AI-generated Korean-style ID photo and profile photo trend.",
+    "usageContext": "求职照、校园证件照、社媒头像和 AI 写真体验分享。",
+    "tone": "新鲜、实用、带一点炫技感",
+    "exampleSentenceKo": "AI 증명사진으로 취업용 프로필을 빨리 맞추는 사람이 많아졌어.",
+    "exampleSentenceZh": "越来越多人用 AI 证件照快速准备求职头像。",
+    "primaryCategory": "ai_play",
+    "secondaryCategories": [
+      "retouching",
+      "photography",
+      "beauty"
+    ],
+    "relatedProducts": [
+      "AI 证件照",
+      "职业头像模板",
+      "背景替换"
+    ],
+    "relatedBrands": [
+      "SNOW",
+      "Studio Labs",
+      "Photoism"
+    ],
+    "visualStyleTags": [
+      "clean-portrait",
+      "professional",
+      "ai-enhanced"
+    ],
+    "targetAudience": [
+      "求职用户",
+      "大学生",
+      "社媒头像用户"
+    ],
+    "sourcePlatforms": [
+      "google_trends",
+      "tiktok_creative_center",
+      "manual_research"
+    ],
+    "trendScore": 97,
+    "growthScore": 96,
+    "engagementScore": 90,
+    "freshnessScore": 95,
+    "authenticityScore": 88,
+    "productizationScore": 98,
+    "filterTemplateFitScore": 94,
+    "viralityScore": 92,
+    "youngWomenRelevanceScore": 87,
+    "beautyFeatureFitScore": 90,
+    "commercialPotentialScore": 98,
+    "confidenceScore": 89,
+    "riskLevel": "medium",
+    "riskFlags": [
+      "ai-generated",
+      "needs-disclosure"
+    ],
+    "lifecycle": "breakout",
+    "firstSeenAt": "2026-06-15T00:00:00.000Z",
+    "lastSeenAt": "2026-06-24T08:00:00.000Z",
+    "collectedSourceCount": 20,
+    "collectedMentionCount": 124,
+    "publicSignalCount": 5,
+    "evidenceCount": 3,
+    "evidenceCompletenessScore": 89,
+    "reviewStatus": "approved",
+    "reviewNotes": "强产品化趋势，适合做 AI 写真与求职照功能。",
+    "topSourceLinks": [
+      {
+        "id": "dddd4444-4444-4444-8444-444444444444",
+        "sourceType": "mention",
+        "sourcePlatform": "youtube",
+        "sourceUrl": "https://www.youtube.com/results?search_query=AI+%EC%A6%9D%EB%AA%85%EC%82%AC%EC%A7%84",
+        "title": "AI 증명사진 후기",
+        "subtitle": "취업 준비할 때 AI 증명사진으로 배경이랑 톤 정리하는 사람이 많더라",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-4441",
+        "sourceType": "public_signal",
+        "sourcePlatform": "google_trends",
+        "sourceUrl": "https://trends.google.com/trends/explore?geo=KR&q=AI%20%EC%A6%9D%EB%AA%85%EC%82%AC%EC%A7%84",
+        "title": "AI profile photo search jump",
+        "subtitle": "AI 证件照/AI 头像相关搜索在韩国短期内爆发。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "ev-4441",
+        "sourceType": "evidence",
+        "sourcePlatform": "manual_research",
+        "sourceUrl": "https://search.naver.com/search.naver?query=AI+%EC%A6%9D%EB%AA%85%EC%82%AC%EC%A7%84",
+        "title": "AI 证件照使用场景确认",
+        "subtitle": "求职、校园证件照和社媒头像三类场景都在同步增长。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "22222222-2222-4222-8222-222222222222",
+    "slug": "insaeng-ne-cut-pose",
+    "primaryTermKo": "인생네컷 포즈",
+    "romanization": "insaeng ne keot pojeu",
+    "zhExplanation": "韩国年轻人在人生四格自拍店流行的拍照姿势合集。",
+    "enExplanation": "A rising set of poses used in Korean four-cut photo booths.",
+    "usageContext": "情侣照、闺蜜照、校园打卡和生日纪念拍摄场景。",
+    "tone": "俏皮、自然、社交属性强",
+    "exampleSentenceKo": "인생네컷 포즈 추천 영상이 뜨면 바로 저장하게 돼.",
+    "exampleSentenceZh": "一刷到人生四格姿势推荐视频我就会立刻收藏。",
+    "primaryCategory": "photography",
+    "secondaryCategories": [
+      "fashion",
+      "retouching"
+    ],
+    "relatedProducts": [
+      "姿势模板",
+      "拍照引导",
+      "多人构图提示"
+    ],
+    "relatedBrands": [
+      "Photoism",
+      "Life4Cuts"
+    ],
+    "visualStyleTags": [
+      "photo-booth",
+      "youthful",
+      "couple-shot"
+    ],
+    "targetAudience": [
+      "韩国 Z 世代",
+      "情侣",
+      "学生群体"
+    ],
+    "sourcePlatforms": [
+      "tiktok_creative_center",
+      "youtube_charts",
+      "manual_research"
+    ],
+    "trendScore": 95,
+    "growthScore": 94,
+    "engagementScore": 89,
+    "freshnessScore": 87,
+    "authenticityScore": 96,
+    "productizationScore": 92,
+    "filterTemplateFitScore": 90,
+    "viralityScore": 94,
+    "youngWomenRelevanceScore": 91,
+    "beautyFeatureFitScore": 74,
+    "commercialPotentialScore": 91,
+    "confidenceScore": 93,
+    "riskLevel": "low",
+    "riskFlags": [],
+    "lifecycle": "breakout",
+    "firstSeenAt": "2026-06-11T00:00:00.000Z",
+    "lastSeenAt": "2026-06-24T08:00:00.000Z",
+    "collectedSourceCount": 24,
+    "collectedMentionCount": 110,
+    "publicSignalCount": 5,
+    "evidenceCount": 3,
+    "evidenceCompletenessScore": 92,
+    "reviewStatus": "approved",
+    "reviewNotes": "适合做姿势推荐、构图引导和拍照模板。",
+    "topSourceLinks": [
+      {
+        "id": "bbbb2222-2222-4222-8222-222222222222",
+        "sourceType": "mention",
+        "sourcePlatform": "youtube",
+        "sourceUrl": "https://www.youtube.com/results?search_query=%EC%9D%B8%EC%83%9D%EB%84%A4%EC%BB%B7+%ED%8F%AC%EC%A6%88",
+        "title": "인생네컷 포즈 추천",
+        "subtitle": "커플 인생네컷 포즈 저장해두면 실패 확률이 적어",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-2221",
+        "sourceType": "public_signal",
+        "sourcePlatform": "youtube_charts",
+        "sourceUrl": "https://www.youtube.com/results?search_query=%EC%9D%B8%EC%83%9D%EB%84%A4%EC%BB%B7+%ED%8F%AC%EC%A6%88",
+        "title": "Pose recommendation videos climbing in Shorts discovery",
+        "subtitle": "短视频推荐位中人生四格姿势类视频集中出现。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-2222",
+        "sourceType": "public_signal",
+        "sourcePlatform": "tiktok_creative_center",
+        "sourceUrl": "https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/en?countryCode=KR",
+        "title": "Photo booth pose signal",
+        "subtitle": "情侣/闺蜜拍照姿势标签在韩国创意榜中持续靠前。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "slug": "glow-cushion",
+    "primaryTermKo": "글로우 쿠션",
+    "romanization": "geullou kusyeon",
+    "zhExplanation": "强调水光底妆和轻薄发光妆感的气垫趋势。",
+    "enExplanation": "A glow-forward cushion makeup trend focused on dewy skin.",
+    "usageContext": "常见于美妆测评、妆容教程、通勤轻妆和夏季底妆讨论。",
+    "tone": "柔和、清透、精致",
+    "exampleSentenceKo": "요즘은 글로우 쿠션으로 피부 표현을 얇게 하는 게 대세야.",
+    "exampleSentenceZh": "最近很流行用 glow cushion 做轻薄透亮的底妆。",
+    "primaryCategory": "beauty",
+    "secondaryCategories": [
+      "fashion",
+      "photography"
+    ],
+    "relatedProducts": [
+      "气垫底妆",
+      "水光妆滤镜",
+      "肤质增强模板"
+    ],
+    "relatedBrands": [
+      "HERA",
+      "LANEIGE",
+      "Espoir"
+    ],
+    "visualStyleTags": [
+      "dew-skin",
+      "soft-highlight",
+      "glass-look"
+    ],
+    "targetAudience": [
+      "韩国年轻女性",
+      "美妆博主",
+      "通勤妆用户"
+    ],
+    "sourcePlatforms": [
+      "tiktok_creative_center",
+      "google_trends",
+      "manual_research"
+    ],
+    "trendScore": 92,
+    "growthScore": 88,
+    "engagementScore": 91,
+    "freshnessScore": 84,
+    "authenticityScore": 94,
+    "productizationScore": 90,
+    "filterTemplateFitScore": 93,
+    "viralityScore": 86,
+    "youngWomenRelevanceScore": 95,
+    "beautyFeatureFitScore": 96,
+    "commercialPotentialScore": 93,
+    "confidenceScore": 91,
+    "riskLevel": "low",
+    "riskFlags": [],
+    "lifecycle": "breakout",
+    "firstSeenAt": "2026-06-08T00:00:00.000Z",
+    "lastSeenAt": "2026-06-24T08:00:00.000Z",
+    "collectedSourceCount": 18,
+    "collectedMentionCount": 94,
+    "publicSignalCount": 4,
+    "evidenceCount": 2,
+    "evidenceCompletenessScore": 86,
+    "reviewStatus": "approved",
+    "reviewNotes": "适合延展底妆推荐与肤质模拟功能。",
+    "topSourceLinks": [
+      {
+        "id": "aaaa1111-1111-4111-8111-111111111111",
+        "sourceType": "mention",
+        "sourcePlatform": "youtube",
+        "sourceUrl": "https://www.youtube.com/results?search_query=%EA%B8%80%EB%A1%9C%EC%9A%B0+%EC%BF%A0%EC%85%98",
+        "title": "6월 글로우 쿠션 비교",
+        "subtitle": "여름엔 글로우 쿠션이 진짜 예쁘게 올라와서 요즘 계속 쓰는 중",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-1111",
+        "sourceType": "public_signal",
+        "sourcePlatform": "tiktok_creative_center",
+        "sourceUrl": "https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/en?countryCode=KR",
+        "title": "Glow cushion related beauty hashtag momentum",
+        "subtitle": "公开趋势页显示韩系清透底妆相关标签持续上升。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-1112",
+        "sourceType": "public_signal",
+        "sourcePlatform": "google_trends",
+        "sourceUrl": "https://trends.google.com/trends/explore?geo=KR&q=%EA%B8%80%EB%A1%9C%EC%9A%B0%20%EC%BF%A0%EC%85%98",
+        "title": "Google Trends KR search surge",
+        "subtitle": "韩国搜索热度在夏季底妆周期内明显抬升。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "33333333-3333-4333-8333-333333333333",
+    "slug": "cool-tone-retouch",
+    "primaryTermKo": "쿨톤 보정",
+    "romanization": "kul-ton bojeong",
+    "zhExplanation": "偏冷色调的人像修图风格，强调通透肤色和蓝灰氛围。",
+    "enExplanation": "A cool-toned portrait retouch style popular in editing tutorials.",
+    "usageContext": "自拍修图、证件照调整、情侣照统一色调和滤镜教程。",
+    "tone": "冷感、精致、氛围感",
+    "exampleSentenceKo": "쿨톤 보정 템플릿 하나만 있어도 사진 무드가 완전 달라져.",
+    "exampleSentenceZh": "只要有一个 cool-tone 修图模板，整张照片氛围就完全不同。",
+    "primaryCategory": "retouching",
+    "secondaryCategories": [
+      "photography",
+      "beauty"
+    ],
+    "relatedProducts": [
+      "滤镜模板",
+      "肤色校正",
+      "批量色调预设"
+    ],
+    "relatedBrands": [
+      "SNOW",
+      "Foodie",
+      "Lightroom Mobile"
+    ],
+    "visualStyleTags": [
+      "cool-tone",
+      "blue-gray",
+      "airbrushed"
+    ],
+    "targetAudience": [
+      "自拍用户",
+      "修图教程创作者",
+      "女高中生与大学生"
+    ],
+    "sourcePlatforms": [
+      "tiktok_creative_center",
+      "google_trends",
+      "manual_research"
+    ],
+    "trendScore": 90,
+    "growthScore": 85,
+    "engagementScore": 84,
+    "freshnessScore": 82,
+    "authenticityScore": 89,
+    "productizationScore": 94,
+    "filterTemplateFitScore": 97,
+    "viralityScore": 80,
+    "youngWomenRelevanceScore": 92,
+    "beautyFeatureFitScore": 88,
+    "commercialPotentialScore": 95,
+    "confidenceScore": 88,
+    "riskLevel": "low",
+    "riskFlags": [],
+    "lifecycle": "steady",
+    "firstSeenAt": "2026-06-02T00:00:00.000Z",
+    "lastSeenAt": "2026-06-24T08:00:00.000Z",
+    "collectedSourceCount": 16,
+    "collectedMentionCount": 80,
+    "publicSignalCount": 4,
+    "evidenceCount": 2,
+    "evidenceCompletenessScore": 79,
+    "reviewStatus": "approved",
+    "reviewNotes": "非常适合模板化与一键美化产品能力。",
+    "topSourceLinks": [
+      {
+        "id": "cccc3333-3333-4333-8333-333333333333",
+        "sourceType": "mention",
+        "sourcePlatform": "youtube",
+        "sourceUrl": "https://www.youtube.com/results?search_query=%EC%BF%A8%ED%86%A4+%EB%B3%B4%EC%A0%95+%ED%85%9C%ED%94%8C%EB%A6%BF",
+        "title": "쿨톤 보정 템플릿",
+        "subtitle": "쿨톤 보정 프리셋 하나로 인생네컷 분위기까지 맞출 수 있어",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-3331",
+        "sourceType": "public_signal",
+        "sourcePlatform": "tiktok_creative_center",
+        "sourceUrl": "https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/en?countryCode=KR",
+        "title": "Filter template cluster",
+        "subtitle": "公开趋势页里滤镜、色感、模板关键词被反复关联。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "ev-3331",
+        "sourceType": "evidence",
+        "sourcePlatform": "manual_research",
+        "sourceUrl": "https://search.naver.com/search.naver?query=%EC%BF%A8%ED%86%A4+%EB%B3%B4%EC%A0%95",
+        "title": "修图模板界面截图归档",
+        "subtitle": "研究员保存了两套冷调模板的参数截图与教程片段。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "55555555-5555-4555-8555-555555555555",
+    "slug": "balletcore-commute-look",
+    "primaryTermKo": "발레코어 출근룩",
+    "romanization": "ballekheo chulgeun ruk",
+    "zhExplanation": "把芭蕾风元素穿进韩国日常通勤和约会场景的穿搭趋势。",
+    "enExplanation": "A balletcore styling wave adapted for Korean commute outfits.",
+    "usageContext": "通勤穿搭、约会穿搭、轻甜风服装灵感和品牌选品。",
+    "tone": "柔软、女性化、都市感",
+    "exampleSentenceKo": "발레코어 출근룩은 리본 디테일이 과하지 않은 게 포인트야.",
+    "exampleSentenceZh": "韩式 balletcore 通勤穿搭的关键是蝴蝶结元素不要过头。",
+    "primaryCategory": "fashion",
+    "secondaryCategories": [
+      "beauty",
+      "photography"
+    ],
+    "relatedProducts": [
+      "穿搭模板",
+      "风格标签",
+      "商品搭配建议"
+    ],
+    "relatedBrands": [
+      "Musinsa",
+      "29CM",
+      "W Concept"
+    ],
+    "visualStyleTags": [
+      "balletcore",
+      "soft-urban",
+      "commute-look"
+    ],
+    "targetAudience": [
+      "韩国年轻女性",
+      "白领",
+      "穿搭博主"
+    ],
+    "sourcePlatforms": [
+      "naver_datalab",
+      "tiktok_creative_center",
+      "manual_research"
+    ],
+    "trendScore": 89,
+    "growthScore": 86,
+    "engagementScore": 83,
+    "freshnessScore": 84,
+    "authenticityScore": 92,
+    "productizationScore": 85,
+    "filterTemplateFitScore": 72,
+    "viralityScore": 88,
+    "youngWomenRelevanceScore": 97,
+    "beautyFeatureFitScore": 68,
+    "commercialPotentialScore": 90,
+    "confidenceScore": 90,
+    "riskLevel": "low",
+    "riskFlags": [],
+    "lifecycle": "steady",
+    "firstSeenAt": "2026-06-01T00:00:00.000Z",
+    "lastSeenAt": "2026-06-24T08:00:00.000Z",
+    "collectedSourceCount": 15,
+    "collectedMentionCount": 77,
+    "publicSignalCount": 3,
+    "evidenceCount": 2,
+    "evidenceCompletenessScore": 74,
+    "reviewStatus": "approved",
+    "reviewNotes": "适合商品推荐、穿搭灵感和风格识别功能。",
+    "topSourceLinks": [
+      {
+        "id": "eeee5555-5555-4555-8555-555555555555",
+        "sourceType": "mention",
+        "sourcePlatform": "naver",
+        "sourceUrl": "https://search.naver.com/search.naver?query=%EB%B0%9C%EB%A0%88%EC%BD%94%EC%96%B4+%EC%B6%9C%EA%B7%BC%EB%A3%A9",
+        "title": "발레코어 출근룩 추천",
+        "subtitle": "발레코어 출근룩은 리본 한 포인트만 줘도 충분히 분위기가 살아",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-5551",
+        "sourceType": "public_signal",
+        "sourcePlatform": "naver_datalab",
+        "sourceUrl": "https://datalab.naver.com/",
+        "title": "Commute look keyword momentum",
+        "subtitle": "Naver 数据显示通勤穿搭与轻甜风格在年轻女性中同步抬升。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "ev-5551",
+        "sourceType": "evidence",
+        "sourcePlatform": "manual_research",
+        "sourceUrl": "https://search.naver.com/search.naver?query=%EB%B0%9C%EB%A0%88%EC%BD%94%EC%96%B4+%EC%B6%9C%EA%B7%BC%EB%A3%A9",
+        "title": "穿搭灵感链接集",
+        "subtitle": "研究员收集了 29CM、Musinsa 和博主内容的公开链接。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "66666666-6666-4666-8666-666666666666",
+    "slug": "photo-matjip",
+    "primaryTermKo": "사진맛집",
+    "romanization": "sajin matjip",
+    "zhExplanation": "指非常出片、特别适合拍照打卡的场景或店铺。",
+    "enExplanation": "A Korean expression for highly photogenic places or setups.",
+    "usageContext": "咖啡店、展览、快闪店、打卡空间和拍照路线推荐。",
+    "tone": "分享欲强、轻松、社交友好",
+    "exampleSentenceKo": "요즘 카페는 커피보다 사진맛집인지 먼저 보게 돼.",
+    "exampleSentenceZh": "现在大家看咖啡店，往往先看它是不是出片圣地。",
+    "primaryCategory": "photography",
+    "secondaryCategories": [
+      "fashion",
+      "beauty"
+    ],
+    "relatedProducts": [
+      "出片地点地图",
+      "场景标签",
+      "打卡攻略模板"
+    ],
+    "relatedBrands": [
+      "Photoism",
+      "Blue Bottle",
+      "Popup Seoul"
+    ],
+    "visualStyleTags": [
+      "photogenic-space",
+      "soft-light",
+      "social-checkin"
+    ],
+    "targetAudience": [
+      "探店用户",
+      "情侣",
+      "内容创作者"
+    ],
+    "sourcePlatforms": [
+      "naver_datalab",
+      "google_trends",
+      "manual_research"
+    ],
+    "trendScore": 87,
+    "growthScore": 84,
+    "engagementScore": 82,
+    "freshnessScore": 80,
+    "authenticityScore": 95,
+    "productizationScore": 88,
+    "filterTemplateFitScore": 78,
+    "viralityScore": 91,
+    "youngWomenRelevanceScore": 89,
+    "beautyFeatureFitScore": 62,
+    "commercialPotentialScore": 87,
+    "confidenceScore": 92,
+    "riskLevel": "low",
+    "riskFlags": [],
+    "lifecycle": "steady",
+    "firstSeenAt": "2026-05-29T00:00:00.000Z",
+    "lastSeenAt": "2026-06-24T08:00:00.000Z",
+    "collectedSourceCount": 21,
+    "collectedMentionCount": 90,
+    "publicSignalCount": 4,
+    "evidenceCount": 3,
+    "evidenceCompletenessScore": 88,
+    "reviewStatus": "approved",
+    "reviewNotes": "适合内容路线、地点推荐和拍照场景功能。",
+    "topSourceLinks": [
+      {
+        "id": "ffff6666-6666-4666-8666-666666666666",
+        "sourceType": "mention",
+        "sourcePlatform": "naver",
+        "sourceUrl": "https://search.naver.com/search.naver?query=%EC%82%AC%EC%A7%84%EB%A7%9B%EC%A7%91+%EC%B9%B4%ED%8E%98",
+        "title": "서울 사진맛집 카페",
+        "subtitle": "이 카페는 커피도 괜찮은데 사진맛집이라 주말마다 줄 서",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "sig-6661",
+        "sourceType": "public_signal",
+        "sourcePlatform": "naver_datalab",
+        "sourceUrl": "https://datalab.naver.com/",
+        "title": "Photogenic cafe search cluster",
+        "subtitle": "出片咖啡店和打卡路线关键词在周末周期性升温。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      },
+      {
+        "id": "ev-6661",
+        "sourceType": "evidence",
+        "sourcePlatform": "manual_research",
+        "sourceUrl": "https://search.naver.com/search.naver?query=%EC%82%AC%EC%A7%84%EB%A7%9B%EC%A7%91+%EC%B9%B4%ED%8E%98",
+        "title": "照片打卡路线证据包",
+        "subtitle": "含 4 个公开打卡点链接和两条用户评论摘录。",
+        "collectedAt": "2026-06-24T08:00:00.000Z"
+      }
+    ]
+  }
+]
