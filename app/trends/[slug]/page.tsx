@@ -8,7 +8,7 @@ import {
   sourceTypeLabels
 } from "@/lib/config";
 import { getTrendDetail } from "@/lib/repositories/trends";
-import { buildTrendExportHref } from "@/lib/site";
+import { buildTrendExportHref, getSiteModeSummary, isStaticSite } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +19,8 @@ export default async function TrendDetailPage({
 }) {
   const { slug } = await params;
   const detail = await getTrendDetail(slug);
+  const siteMode = getSiteModeSummary();
+  const staticSite = isStaticSite();
 
   if (!detail) {
     notFound();
@@ -30,6 +32,19 @@ export default async function TrendDetailPage({
         <Link href="/" className="text-sm text-cyan-200">
           返回 Dashboard
         </Link>
+      </div>
+      <div className="mb-6 rounded-[24px] border border-amber-300/20 bg-amber-300/[0.08] p-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="rounded-full border border-amber-300/30 px-3 py-1 text-xs text-amber-100">
+            {siteMode.label}
+          </span>
+          <span className="text-sm text-slate-200">{siteMode.description}</span>
+        </div>
+        <p className="mt-2 text-xs leading-6 text-slate-300">
+          {staticSite
+            ? "如果你要看韩国最新热点，需要把这套项目切到动态后端部署，并接入数据库、定时任务和官方 API。"
+            : "当前环境可继续扩到按小时更新的动态趋势系统。"}
+        </p>
       </div>
 
       <section className="grid gap-6 lg:grid-cols-[1.25fr_0.9fr]">

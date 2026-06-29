@@ -46,6 +46,17 @@ export function TrendCard({
         >
           {trend.zhExplanation}
         </p>
+        <p
+          className="mt-2 text-xs leading-6 text-slate-400"
+          style={{
+            display: "-webkit-box",
+            WebkitLineClamp: compact ? 2 : 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden"
+          }}
+        >
+          EN: {trend.enExplanation}
+        </p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
           <span className="rounded-full border border-white/10 px-3 py-1">
             {lifecycleLabels[trend.lifecycle]}

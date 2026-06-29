@@ -8,6 +8,7 @@ import {
   listPublicTrendSites,
   listSourceCapabilities
 } from "@/lib/repositories/trends";
+import { getSiteModeSummary, isStaticSite } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,8 @@ export default async function HomePage() {
   const dashboard = await getDashboardData();
   const sources = await listSourceCapabilities();
   const publicSites = await listPublicTrendSites();
+  const siteMode = getSiteModeSummary();
+  const staticSite = isStaticSite();
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
@@ -29,6 +32,19 @@ export default async function HomePage() {
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
             平台默认中文界面，保留韩语原词、罗马音、来源站点、证据链接与分析师备注。重点板块覆盖美妆、拍照、修图、AI 玩法与服装趋势，支持先从 TikTok Creative Center、Google Trends、Naver DataLab、YouTube Charts 发现趋势。
           </p>
+          <div className="mt-6 rounded-[24px] border border-amber-300/20 bg-amber-300/[0.08] p-4">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-full border border-amber-300/30 px-3 py-1 text-xs text-amber-100">
+                当前模式 · {siteMode.label}
+              </span>
+              <span className="text-sm text-amber-50/90">
+                {siteMode.description}
+              </span>
+            </div>
+            <p className="mt-3 text-xs leading-6 text-slate-300">
+              English-ready: 首页卡片、后台列表和详情页都展示英文解释，方便非中文同事直接阅读。
+            </p>
+          </div>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
             <div className="rounded-[24px] border border-cyan-300/20 bg-cyan-300/[0.08] p-4">
               <p className="text-sm text-cyan-100">今日 Top 趋势</p>
@@ -47,7 +63,9 @@ export default async function HomePage() {
               </p>
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/5 p-4">
-              <p className="text-sm text-slate-300">数据更新时间</p>
+              <p className="text-sm text-slate-300">
+                {staticSite ? "页面生成时间" : "数据更新时间"}
+              </p>
               <p className="mt-2 text-lg font-semibold text-white">
                 {new Date(dashboard.generatedAt).toLocaleString("zh-CN", {
                   hour12: false

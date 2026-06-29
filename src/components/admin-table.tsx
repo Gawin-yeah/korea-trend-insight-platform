@@ -23,6 +23,7 @@ export function AdminTable({ items }: { items: TrendCluster[] }) {
                 <div>
                   <p className="font-medium text-white">{item.primaryTermKo}</p>
                   <p className="text-xs text-slate-400">{item.zhExplanation}</p>
+                  <p className="mt-1 text-xs text-cyan-100/80">EN: {item.enExplanation}</p>
                 </div>
               </td>
               <td className="px-4 py-3">{item.primaryCategory}</td>
@@ -37,4 +38,3 @@ export function AdminTable({ items }: { items: TrendCluster[] }) {
     </div>
   );
 }
-

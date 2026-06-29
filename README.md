@@ -6,6 +6,7 @@
 
 ## 功能范围
 - 中文默认界面，保留韩语原词与罗马音。
+- 首页卡片、趋势详情页、后台列表同时展示中文与英文解释。
 - Top 50 今日趋势、上升最快趋势、分类榜单、商业化潜力榜单。
 - 趋势详情页：释义、使用语境、风险等级、公开趋势信号、人工证据、热度曲线。
 - 管理后台：审核、数据源配置、人工证据录入。
@@ -17,8 +18,13 @@
 - 人工补证据：研究员手工录入链接、截图摘要、评论摘录、分析师备注
 - 深度授权采集：Instagram / Threads / X / Naver Open API 作为后续增强层
 
+## GitHub Pages 正式站说明
+- GitHub Pages 版本是免费公网静态站，适合演示、分享和团队查看。
+- 它不会自动刷新韩国最新热点，页面内容固定为上次构建时的种子数据或导出结果。
+- 如果要看接近实时的最新热点，需要切回动态部署路线，接入数据库、定时任务和官方 API。
+
 ## 技术栈
-- 前端与 API：Next.js 15 + TypeScript + Tailwind CSS
+- 前端与 API：Next.js 16 + TypeScript + Tailwind CSS
 - 数据库：PostgreSQL
 - 定时任务：Node cron worker
 - LLM：OpenAI 可选，用于聚类、释义和风险判断
@@ -151,6 +157,7 @@ docs/                PRD 与架构文档
 - `docs/prd.md` 包含 PRD、schema 设计、系统架构文字图、API 设计、目录结构与 MVP 计划。
 - `docs/deployment.md` 包含本地 Demo、完整 Docker 栈、环境变量和上线前检查清单。
 - `docs/deploy-github.md` 提供不依赖 GPT/Sites 的 GitHub 上线方案，包含 VPS / Railway / Render 三条路线。
+- `docs/deploy-github-pages.md` 提供 GitHub Pages 静态正式站的重新构建与发布步骤。
 - `docs/deploy-render-free.md` 提供单人可用、低成本的 Render 免费正式站部署方案。
 - 首次启动会根据 `SEED_ON_BOOT` 自动写入种子数据，便于直接查看 UI。
 - 首批韩语趋势关键词种子统一定义在 [src/lib/keywords/kr-seeds.ts](/Users/gawin/Documents/Codex/2026-06-24/sites-plugin-sites-openai-bundled/src/lib/keywords/kr-seeds.ts)。
