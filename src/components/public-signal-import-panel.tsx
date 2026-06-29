@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isStaticSite } from "@/lib/site";
 
 interface ImportResult {
   source?: string;
@@ -12,6 +13,7 @@ interface ImportResult {
 export function PublicSignalImportPanel() {
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<ImportResult | null>(null);
+  const staticSite = isStaticSite();
 
   async function runImport() {
     setPending(true);
@@ -34,19 +36,25 @@ export function PublicSignalImportPanel() {
             当前导入器会从内置公开快照导入 TikTok Creative Center、Google Trends、Naver DataLab、YouTube Charts 的趋势信号，并写入 `trend_public_signals`。
           </p>
         </div>
-        <button
-          type="button"
-          onClick={runImport}
-          disabled={pending}
-          className="rounded-full border border-cyan-300/30 bg-slate-950/50 px-4 py-2 text-sm text-cyan-100 disabled:opacity-50"
-        >
-          {pending ? "导入中..." : "一键导入公开信号"}
-        </button>
+        {staticSite ? (
+          <span className="rounded-full border border-white/10 bg-slate-950/50 px-4 py-2 text-sm text-slate-200">
+            公网版为只读演示
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={runImport}
+            disabled={pending}
+            className="rounded-full border border-cyan-300/30 bg-slate-950/50 px-4 py-2 text-sm text-cyan-100 disabled:opacity-50"
+          >
+            {pending ? "导入中..." : "一键导入公开信号"}
+          </button>
+        )}
       </div>
 
       <div className="mt-4 grid gap-2 font-mono text-sm text-white">
         <code>npm run import:signals</code>
-        <code>POST /api/ingestion/run?kind=public_signals</code>
+        <code>{staticSite ? "公网版不执行 POST 导入" : "POST /api/ingestion/run?kind=public_signals"}</code>
       </div>
 
       {result ? (
@@ -67,4 +75,3 @@ export function PublicSignalImportPanel() {
     </div>
   );
 }
-

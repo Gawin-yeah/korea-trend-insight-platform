@@ -8,3 +8,5 @@ coverage
 docker-data
 tsconfig.tsbuildinfo
 outputs/*.tar.gz
+work/
+.wrangler/state/

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buildTrendExportHref } from "@/lib/site";
 
 export function Header() {
   return (
@@ -15,7 +16,7 @@ export function Header() {
         <nav className="flex items-center gap-4 text-sm text-slate-200">
           <Link href="/">Dashboard</Link>
           <Link href="/admin">管理后台</Link>
-          <a href="/api/export?format=json" className="rounded-full bg-white/10 px-4 py-2">
+          <a href={buildTrendExportHref("json")} className="rounded-full bg-white/10 px-4 py-2">
             导出 JSON
           </a>
         </nav>
@@ -23,4 +24,3 @@ export function Header() {
     </header>
   );
 }
-

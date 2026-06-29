@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "vinext build",
+    "build:static-exports": "node --import tsx scripts/generate-static-exports.ts",
     "start": "vinext start",
     "lint": "tsc --noEmit",
     "db:migrate": "node --import tsx scripts/migrate.ts",

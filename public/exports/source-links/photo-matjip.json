@@ -1,0 +1,33 @@
+{
+  "slug": "photo-matjip",
+  "primaryTermKo": "사진맛집",
+  "sourceLinks": [
+    {
+      "id": "ffff6666-6666-4666-8666-666666666666",
+      "sourceType": "mention",
+      "sourcePlatform": "naver",
+      "sourceUrl": "https://search.naver.com/search.naver?query=%EC%82%AC%EC%A7%84%EB%A7%9B%EC%A7%91+%EC%B9%B4%ED%8E%98",
+      "title": "서울 사진맛집 카페",
+      "subtitle": "이 카페는 커피도 괜찮은데 사진맛집이라 주말마다 줄 서",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "sig-6661",
+      "sourceType": "public_signal",
+      "sourcePlatform": "naver_datalab",
+      "sourceUrl": "https://datalab.naver.com/",
+      "title": "Photogenic cafe search cluster",
+      "subtitle": "出片咖啡店和打卡路线关键词在周末周期性升温。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "ev-6661",
+      "sourceType": "evidence",
+      "sourcePlatform": "manual_research",
+      "sourceUrl": "https://search.naver.com/search.naver?query=%EC%82%AC%EC%A7%84%EB%A7%9B%EC%A7%91+%EC%B9%B4%ED%8E%98",
+      "title": "照片打卡路线证据包",
+      "subtitle": "含 4 个公开打卡点链接和两条用户评论摘录。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    }
+  ]
+}

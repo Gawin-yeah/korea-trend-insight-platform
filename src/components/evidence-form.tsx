@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isStaticSite } from "@/lib/site";
 import type { EvidenceRecord, Platform } from "@/types/trend";
 
 const platformOptions: Platform[] = [
@@ -15,8 +16,14 @@ const platformOptions: Platform[] = [
 export function EvidenceForm({ slugs }: { slugs: string[] }) {
   const [message, setMessage] = useState("");
   const [pending, setPending] = useState(false);
+  const staticSite = isStaticSite();
 
   async function onSubmit(formData: FormData) {
+    if (staticSite) {
+      setMessage("公网演示站不保存表单数据，请在本地或带数据库环境中提交证据。");
+      return;
+    }
+
     setPending(true);
     setMessage("");
 
@@ -147,10 +154,10 @@ export function EvidenceForm({ slugs }: { slugs: string[] }) {
       </label>
       <button
         type="submit"
-        disabled={pending}
+        disabled={pending || staticSite}
         className="rounded-full border border-cyan-300/30 bg-cyan-300/[0.08] px-4 py-3 text-sm text-cyan-100 disabled:opacity-50"
       >
-        {pending ? "提交中..." : "提交证据"}
+        {staticSite ? "公网版不写入" : pending ? "提交中..." : "提交证据"}
       </button>
       {message ? <p className="text-sm text-slate-300">{message}</p> : null}
     </form>

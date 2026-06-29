@@ -1,0 +1,42 @@
+{
+  "slug": "glow-cushion",
+  "primaryTermKo": "글로우 쿠션",
+  "sourceLinks": [
+    {
+      "id": "aaaa1111-1111-4111-8111-111111111111",
+      "sourceType": "mention",
+      "sourcePlatform": "youtube",
+      "sourceUrl": "https://www.youtube.com/results?search_query=%EA%B8%80%EB%A1%9C%EC%9A%B0+%EC%BF%A0%EC%85%98",
+      "title": "6월 글로우 쿠션 비교",
+      "subtitle": "여름엔 글로우 쿠션이 진짜 예쁘게 올라와서 요즘 계속 쓰는 중",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "sig-1111",
+      "sourceType": "public_signal",
+      "sourcePlatform": "tiktok_creative_center",
+      "sourceUrl": "https://ads.tiktok.com/business/creativecenter/inspiration/popular/hashtag/pc/en?countryCode=KR",
+      "title": "Glow cushion related beauty hashtag momentum",
+      "subtitle": "公开趋势页显示韩系清透底妆相关标签持续上升。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "sig-1112",
+      "sourceType": "public_signal",
+      "sourcePlatform": "google_trends",
+      "sourceUrl": "https://trends.google.com/trends/explore?geo=KR&q=%EA%B8%80%EB%A1%9C%EC%9A%B0%20%EC%BF%A0%EC%85%98",
+      "title": "Google Trends KR search surge",
+      "subtitle": "韩国搜索热度在夏季底妆周期内明显抬升。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    },
+    {
+      "id": "ev-1111",
+      "sourceType": "evidence",
+      "sourcePlatform": "manual_research",
+      "sourceUrl": "https://search.naver.com/search.naver?query=%EA%B8%80%EB%A1%9C%EC%9A%B0+%EC%BF%A0%EC%85%98",
+      "title": "研究员整理的韩妆测评样本",
+      "subtitle": "来自韩国美妆博主的 3 条公开视频链接均在讨论夏季水光气垫。",
+      "collectedAt": "2026-06-24T08:00:00.000Z"
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import {
   sourceTypeLabels
 } from "@/lib/config";
 import { getTrendDetail } from "@/lib/repositories/trends";
+import { buildTrendExportHref } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -99,13 +100,13 @@ export default async function TrendDetailPage({
                   查看这条热点的全部来源链接
                 </a>
                 <a
-                  href={`/api/export?format=json&slug=${detail.slug}&scope=source_links`}
+                  href={buildTrendExportHref("json", detail.slug)}
                   className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-100"
                 >
                   导出链接 JSON
                 </a>
                 <a
-                  href={`/api/export?format=csv&slug=${detail.slug}&scope=source_links`}
+                  href={buildTrendExportHref("csv", detail.slug)}
                   className="inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-100"
                 >
                   导出链接 CSV

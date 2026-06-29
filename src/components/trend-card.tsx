@@ -85,7 +85,6 @@ export function TrendCard({
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-2 text-sm text-slate-200"
-                  onClick={(event) => event.stopPropagation()}
                 >
                   <span className="inline-flex min-w-8 justify-center rounded-full border border-white/10 px-2 py-1 text-[11px] text-cyan-100">
                     {platformAbbreviations[item.sourcePlatform]}
