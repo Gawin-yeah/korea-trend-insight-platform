@@ -1,4 +1,5 @@
 import { PublicTrendSiteCard } from "@/components/public-trend-site-card";
+import { RealtimeStatusPanel } from "@/components/realtime-status-panel";
 import { SourceStatusCard } from "@/components/source-status-card";
 import { BoardSection } from "@/components/board-section";
 import { TrendCard } from "@/components/trend-card";
@@ -32,6 +33,9 @@ export default async function HomePage() {
           <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
             平台默认中文界面，保留韩语原词、罗马音、来源站点、证据链接与分析师备注。重点板块覆盖美妆、拍照、修图、AI 玩法与服装趋势，支持先从 TikTok Creative Center、Google Trends、Naver DataLab、YouTube Charts 发现趋势。
           </p>
+          <div className="mt-6">
+            <RealtimeStatusPanel initialStatus={dashboard.realtimeStatus} />
+          </div>
           <div className="mt-6 rounded-[24px] border border-amber-300/20 bg-amber-300/[0.08] p-4">
             <div className="flex flex-wrap items-center gap-3">
               <span className="rounded-full border border-amber-300/30 px-3 py-1 text-xs text-amber-100">

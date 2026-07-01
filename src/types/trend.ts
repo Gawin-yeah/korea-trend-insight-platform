@@ -177,6 +177,23 @@ export interface DashboardData {
     count: number;
   }>;
   publicSignalSummary: Array<{ platform: Platform; count: number }>;
+  realtimeStatus: RealtimeStatus;
+}
+
+export interface RealtimeStatus {
+  mode: "static_demo" | "dynamic_demo" | "dynamic_live";
+  realtimeEnabled: boolean;
+  autoRefreshEnabled: boolean;
+  refreshIntervalSeconds: number;
+  staleAfterMinutes: number;
+  latestDataAt?: string | null;
+  latestMentionAt?: string | null;
+  latestSignalAt?: string | null;
+  lastSuccessfulRefreshAt?: string | null;
+  lastRefreshStartedAt?: string | null;
+  lastRefreshMessage?: string | null;
+  activeSources: Platform[];
+  snapshotSources: Platform[];
 }
 
 export interface SourceCapability {

@@ -7,7 +7,11 @@ interface ImportResult {
   source?: string;
   importedCount?: number;
   message?: string;
-  importers?: Array<{ platform: string; importedCount: number }>;
+  importers?: Array<{
+    platform: string;
+    mode?: "live" | "snapshot" | "hybrid" | "disabled";
+    importedCount: number;
+  }>;
 }
 
 export function PublicSignalImportPanel() {
@@ -33,7 +37,7 @@ export function PublicSignalImportPanel() {
         <div>
           <p className="text-sm text-cyan-100">公开趋势信号导入</p>
           <p className="mt-2 text-sm leading-6 text-slate-300">
-            当前导入器会从内置公开快照导入 TikTok Creative Center、Google Trends、Naver DataLab、YouTube Charts 的趋势信号，并写入 `trend_public_signals`。
+            当前导入器会优先尝试 live 数据源；当公开源不可用或缺少凭证时，再回退到内置 snapshot，统一写入 `trend_public_signals`。
           </p>
         </div>
         {staticSite ? (
@@ -65,7 +69,7 @@ export function PublicSignalImportPanel() {
             <div className="mt-3 flex flex-wrap gap-2">
               {result.importers.map((item) => (
                 <span key={item.platform} className="rounded-full border border-white/10 px-3 py-1 text-xs">
-                  {item.platform} {item.importedCount}
+                  {item.platform} {item.mode ? `(${item.mode})` : ""} {item.importedCount}
                 </span>
               ))}
             </div>

@@ -1,7 +1,31 @@
 export const appBasePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
+function readPositiveNumber(rawValue: string | undefined, fallback: number) {
+  const parsed = Number(rawValue);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+
+  return parsed;
+}
+
 export function isStaticSite() {
   return process.env.NEXT_PUBLIC_STATIC_SITE === "true";
+}
+
+export function getAutoRefreshIntervalSeconds() {
+  return readPositiveNumber(
+    process.env.NEXT_PUBLIC_AUTO_REFRESH_SECONDS || process.env.AUTO_REFRESH_INTERVAL_SECONDS,
+    60
+  );
+}
+
+export function getRealtimeStaleAfterMinutes() {
+  return readPositiveNumber(process.env.REALTIME_STALE_AFTER_MINUTES, 20);
+}
+
+export function isRealtimeAutomationEnabled() {
+  return !isStaticSite() && process.env.DISABLE_REALTIME_AUTOMATION !== "true";
 }
 
 export function toAppPath(path: string) {
@@ -46,5 +70,5 @@ export function getSiteModeSummary() {
     label: "动态应用",
     description:
       "当前环境可接入数据库、定时任务和官方 API，用于持续刷新韩国最新热点。"
-    };
+  };
 }

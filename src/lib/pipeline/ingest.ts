@@ -9,8 +9,21 @@ import {
 } from "@/lib/pipeline/scoring";
 import type { PublicSignalCandidate } from "@/lib/public-signal-importers/base";
 import { publicSignalImporterRegistry } from "@/lib/public-signal-importers/registry";
+import {
+  getRealtimeStaleAfterMinutes,
+  isRealtimeAutomationEnabled
+} from "@/lib/site";
 import { sourceRegistry } from "@/lib/sources/source-registry";
 import type { Category, Platform, RiskLevel } from "@/types/trend";
+
+type RefreshReason =
+  | "database_not_configured"
+  | "automation_disabled"
+  | "fresh_enough"
+  | "refreshed"
+  | "refresh_in_progress";
+
+let activeRefreshPromise: Promise<void> | null = null;
 
 function pickSeedTemplate(category: Category) {
   return seedClusters.find((item) => item.primaryCategory === category) || seedClusters[0];
@@ -33,6 +46,153 @@ function inferRiskLevel(termKo: string): RiskLevel {
   }
 
   return "low";
+}
+
+async function createIngestionRun(sourcePlatform: Platform, message: string) {
+  const run = await getPool().query<{ id: string }>(
+    `
+      INSERT INTO ingestion_runs (source_platform, status, fetched_count, accepted_count, message)
+      VALUES ($1, 'running', 0, 0, $2)
+      RETURNING id
+    `,
+    [sourcePlatform, message]
+  );
+
+  return run.rows[0].id;
+}
+
+async function completeIngestionRun(
+  runId: string,
+  fetchedCount: number,
+  acceptedCount: number,
+  message?: string
+) {
+  await getPool().query(
+    `
+      UPDATE ingestion_runs
+      SET
+        status = 'completed',
+        fetched_count = $2,
+        accepted_count = $3,
+        message = COALESCE($4, message),
+        completed_at = NOW()
+      WHERE id = $1
+    `,
+    [runId, fetchedCount, acceptedCount, message || null]
+  );
+}
+
+async function failIngestionRun(runId: string, message: string) {
+  await getPool().query(
+    `
+      UPDATE ingestion_runs
+      SET status = 'failed', message = $2, completed_at = NOW()
+      WHERE id = $1
+    `,
+    [runId, message]
+  );
+}
+
+export async function getRealtimeRefreshState() {
+  if (!isDatabaseConfigured()) {
+    return {
+      latestMentionAt: null,
+      latestSignalAt: null,
+      latestDataAt: null,
+      lastSuccessfulRefreshAt: null,
+      lastRefreshStartedAt: null,
+      lastRefreshMessage: "DATABASE_URL 未配置，当前仍是演示模式。"
+    };
+  }
+
+  const [mentionResult, signalResult, runResult] = await Promise.all([
+    getPool().query<{ latest_mention_at: string | null }>(
+      "SELECT MAX(collected_at) AS latest_mention_at FROM trend_mentions"
+    ),
+    getPool().query<{ latest_signal_at: string | null }>(
+      "SELECT MAX(collected_at) AS latest_signal_at FROM trend_public_signals"
+    ),
+    getPool().query<{
+      started_at: string | null;
+      completed_at: string | null;
+      status: string;
+      message: string | null;
+    }>(
+      `
+        SELECT started_at, completed_at, status, message
+        FROM ingestion_runs
+        ORDER BY started_at DESC
+        LIMIT 1
+      `
+    )
+  ]);
+
+  const latestMentionAt = mentionResult.rows[0]?.latest_mention_at || null;
+  const latestSignalAt = signalResult.rows[0]?.latest_signal_at || null;
+  const latestDataAt = [latestMentionAt, latestSignalAt]
+    .filter(Boolean)
+    .sort()
+    .at(-1) || null;
+  const latestRun = runResult.rows[0];
+
+  return {
+    latestMentionAt,
+    latestSignalAt,
+    latestDataAt,
+    lastSuccessfulRefreshAt: latestRun?.status === "completed" ? latestRun.completed_at : null,
+    lastRefreshStartedAt: latestRun?.started_at || null,
+    lastRefreshMessage: latestRun?.message || null
+  };
+}
+
+export async function ensureFreshTrendData(maxAgeMinutes = getRealtimeStaleAfterMinutes()) {
+  if (!isDatabaseConfigured()) {
+    return {
+      triggered: false,
+      reason: "database_not_configured" as RefreshReason
+    };
+  }
+
+  if (!isRealtimeAutomationEnabled()) {
+    return {
+      triggered: false,
+      reason: "automation_disabled" as RefreshReason
+    };
+  }
+
+  if (activeRefreshPromise) {
+    await activeRefreshPromise;
+    return {
+      triggered: false,
+      reason: "refresh_in_progress" as RefreshReason
+    };
+  }
+
+  const status = await getRealtimeRefreshState();
+  const latestDataAt = status.latestDataAt || status.lastSuccessfulRefreshAt;
+  const latestTimestamp = latestDataAt ? new Date(latestDataAt).getTime() : 0;
+  const staleThresholdMs = maxAgeMinutes * 60 * 1000;
+
+  if (latestTimestamp && Date.now() - latestTimestamp < staleThresholdMs) {
+    return {
+      triggered: false,
+      reason: "fresh_enough" as RefreshReason
+    };
+  }
+
+  activeRefreshPromise = (async () => {
+    await runPublicSignalImportJob();
+    await runIngestionJob();
+  })().finally(() => {
+    activeRefreshPromise = null;
+  });
+
+  await activeRefreshPromise;
+
+  return {
+    triggered: true,
+    reason: "refreshed" as RefreshReason
+  };
 }
 
 async function ensureClusterForTerm(input: {
@@ -123,7 +283,7 @@ async function ensureClusterForTerm(input: {
           "emerging",
           input.collectedAt,
           input.collectedAt,
-          1,
+          0,
           0,
           0,
           0,
@@ -140,7 +300,6 @@ async function ensureClusterForTerm(input: {
           UPDATE trend_clusters
           SET
             last_seen_at = $2,
-            collected_source_count = collected_source_count + 1,
             trend_score = GREATEST(trend_score, $3),
             source_platforms = (
               SELECT ARRAY(
@@ -252,6 +411,21 @@ async function upsertCollectedTerm(input: {
   try {
     await client.query("BEGIN");
 
+    const existingMentionResult = await client.query<{ id: string }>(
+      `
+        SELECT id
+        FROM trend_mentions
+        WHERE source_platform = $1 AND source_url = $2
+        LIMIT 1
+      `,
+      [input.sourcePlatform, input.sourceUrl]
+    );
+
+    if (existingMentionResult.rows[0]?.id) {
+      await client.query("ROLLBACK");
+      return false;
+    }
+
     const mentionResult = await client.query<{ id: string }>(
       `
         INSERT INTO trend_mentions (
@@ -331,6 +505,7 @@ async function upsertCollectedTerm(input: {
       `
         UPDATE trend_clusters
         SET
+          collected_source_count = collected_source_count + 1,
           collected_mention_count = collected_mention_count + 1,
           trend_score = GREATEST(trend_score, $2),
           commercial_potential_score = GREATEST(commercial_potential_score, $3),
@@ -341,6 +516,7 @@ async function upsertCollectedTerm(input: {
     );
 
     await client.query("COMMIT");
+    return true;
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;
@@ -350,7 +526,11 @@ async function upsertCollectedTerm(input: {
 }
 
 async function upsertPublicSignal(signal: PublicSignalCandidate) {
-  const trendScoreBoost = Math.round(70 + signal.confidenceScore * 20 + (signal.observedRank ? 10 - Math.min(signal.observedRank, 10) : 5));
+  const trendScoreBoost = Math.round(
+    70 +
+      signal.confidenceScore * 20 +
+      (signal.observedRank ? 10 - Math.min(signal.observedRank, 10) : 5)
+  );
   const clusterId = await ensureClusterForTerm({
     canonicalTermKo: signal.canonicalTermKo,
     category: signal.category,
@@ -365,6 +545,25 @@ async function upsertPublicSignal(signal: PublicSignalCandidate) {
 
   try {
     await client.query("BEGIN");
+
+    const existingSignalResult = await client.query<{ id: string }>(
+      `
+        SELECT id
+        FROM trend_public_signals
+        WHERE
+          cluster_id = $1
+          AND source_platform = $2
+          AND source_url = $3
+          AND signal_title = $4
+        LIMIT 1
+      `,
+      [clusterId, signal.sourcePlatform, signal.sourceUrl, signal.signalTitle]
+    );
+
+    if (existingSignalResult.rows[0]?.id) {
+      await client.query("ROLLBACK");
+      return false;
+    }
 
     await client.query(
       `
@@ -395,6 +594,7 @@ async function upsertPublicSignal(signal: PublicSignalCandidate) {
       `
         UPDATE trend_clusters
         SET
+          collected_source_count = collected_source_count + 1,
           public_signal_count = public_signal_count + 1,
           source_platforms = (
             SELECT ARRAY(
@@ -409,6 +609,7 @@ async function upsertPublicSignal(signal: PublicSignalCandidate) {
     );
 
     await client.query("COMMIT");
+    return true;
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;
@@ -419,7 +620,11 @@ async function upsertPublicSignal(signal: PublicSignalCandidate) {
 
 export async function runPublicSignalImportJob() {
   if (!isDatabaseConfigured()) {
-    const importerResults: Array<{ platform: Platform; importedCount: number }> = [];
+    const importerResults: Array<{
+      platform: Platform;
+      mode: "live" | "snapshot" | "hybrid" | "disabled";
+      importedCount: number;
+    }> = [];
     let importedCount = 0;
 
     for (const importer of publicSignalImporterRegistry) {
@@ -427,6 +632,7 @@ export async function runPublicSignalImportJob() {
       importedCount += signals.length;
       importerResults.push({
         platform: importer.name,
+        mode: importer.getMode(),
         importedCount: signals.length
       });
     }
@@ -440,24 +646,54 @@ export async function runPublicSignalImportJob() {
     };
   }
 
-  const importerResults: Array<{ platform: Platform; importedCount: number }> = [];
+  const importerResults: Array<{
+    platform: Platform;
+    mode: "live" | "snapshot" | "hybrid" | "disabled";
+    importedCount: number;
+  }> = [];
   let importedCount = 0;
 
   for (const importer of publicSignalImporterRegistry) {
-    const signals = await importer.importSignals();
-    for (const signal of signals) {
-      await upsertPublicSignal(signal);
-      importedCount += 1;
-    }
+    const runId = await createIngestionRun(
+      importer.name,
+      `${importer.displayName} (${importer.getMode()})`
+    );
 
-    importerResults.push({
-      platform: importer.name,
-      importedCount: signals.length
-    });
+    try {
+      const signals = await importer.importSignals();
+      let insertedCount = 0;
+
+      for (const signal of signals) {
+        const inserted = await upsertPublicSignal(signal);
+        if (inserted) {
+          importedCount += 1;
+          insertedCount += 1;
+        }
+      }
+
+      await completeIngestionRun(
+        runId,
+        signals.length,
+        insertedCount,
+        `${importer.displayName} 已完成导入。`
+      );
+
+      importerResults.push({
+        platform: importer.name,
+        mode: importer.getMode(),
+        importedCount: insertedCount
+      });
+    } catch (error) {
+      await failIngestionRun(
+        runId,
+        error instanceof Error ? error.message : "Unknown public signal importer error"
+      );
+      throw error;
+    }
   }
 
   return {
-    source: "public_signal_snapshots",
+    source: "public_signal_importers",
     importedCount,
     importers: importerResults,
     message: "Public signal import completed."
@@ -477,24 +713,16 @@ export async function runIngestionJob() {
   let acceptedCount = 0;
 
   for (const adapter of sourceRegistry) {
-    const mentions = await adapter.fetchMentions();
-    fetchedCount += mentions.length;
+    const runId = await createIngestionRun(adapter.name, adapter.description);
 
     try {
-      const run = await getPool().query<{ id: string }>(
-        `
-          INSERT INTO ingestion_runs (source_platform, status, fetched_count, accepted_count, message)
-          VALUES ($1, 'running', 0, 0, $2)
-          RETURNING id
-        `,
-        [adapter.name, adapter.description]
-      );
-      const runId = run.rows[0].id;
+      const mentions = await adapter.fetchMentions();
+      fetchedCount += mentions.length;
       let adapterAcceptedCount = 0;
 
       for (const mention of mentions) {
         if (mention.sourceAuthorRegionSignal === "KR" || mention.platform === "youtube") {
-          await upsertCollectedTerm({
+          const inserted = await upsertCollectedTerm({
             canonicalTermKo: mention.canonicalTermKo,
             category: mention.category,
             sourcePlatform: mention.platform,
@@ -512,20 +740,25 @@ export async function runIngestionJob() {
             viewsCount: mention.viewsCount,
             sharesCount: mention.sharesCount
           });
-          acceptedCount += 1;
-          adapterAcceptedCount += 1;
+
+          if (inserted) {
+            acceptedCount += 1;
+            adapterAcceptedCount += 1;
+          }
         }
       }
 
-      await getPool().query(
-        `
-          UPDATE ingestion_runs
-          SET status = 'completed', fetched_count = $2, accepted_count = $3, completed_at = NOW()
-          WHERE id = $1
-        `,
-        [runId, mentions.length, adapterAcceptedCount]
+      await completeIngestionRun(
+        runId,
+        mentions.length,
+        adapterAcceptedCount,
+        `${adapter.description} 已完成拉取。`
       );
     } catch (error) {
+      await failIngestionRun(
+        runId,
+        error instanceof Error ? error.message : "Unknown legal source ingestion error"
+      );
       throw error;
     }
   }

@@ -1,9 +1,14 @@
 import { PublicSignalImportPanel } from "@/components/public-signal-import-panel";
+import { RealtimeStatusPanel } from "@/components/realtime-status-panel";
 import Link from "next/link";
 import { PublicTrendSiteCard } from "@/components/public-trend-site-card";
 import { SourceStatusCard } from "@/components/source-status-card";
 import { SourceTestPanel } from "@/components/source-test-panel";
-import { listPublicTrendSites, listSourceCapabilities } from "@/lib/repositories/trends";
+import {
+  getDashboardData,
+  listPublicTrendSites,
+  listSourceCapabilities
+} from "@/lib/repositories/trends";
 import { testSources } from "@/lib/sources/testing";
 
 export const dynamic = "force-dynamic";
@@ -12,6 +17,7 @@ export default async function AdminSourcesPage() {
   const capabilities = await listSourceCapabilities();
   const publicSites = await listPublicTrendSites();
   const testResults = await testSources();
+  const dashboard = await getDashboardData();
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-10">
@@ -27,6 +33,9 @@ export default async function AdminSourcesPage() {
         <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">
           这里把“公开趋势发现层”和“深度授权采集层”分开看。前者不用申请也能先跑，后者等需要更深数据时再补凭证。
         </p>
+        <div className="mt-6">
+          <RealtimeStatusPanel initialStatus={dashboard.realtimeStatus} />
+        </div>
 
         <div className="mt-8">
           <h2 className="text-2xl font-semibold text-white">公开趋势发现层</h2>

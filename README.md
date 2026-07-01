@@ -23,6 +23,15 @@
 - 它不会自动刷新韩国最新热点，页面内容固定为上次构建时的种子数据或导出结果。
 - 如果要看接近实时的最新热点，需要切回动态部署路线，接入数据库、定时任务和官方 API。
 
+## 实时更新模式
+- 动态部署时，Dashboard 会按 `NEXT_PUBLIC_AUTO_REFRESH_SECONDS` 自动轮询。
+- 当最新数据超过 `REALTIME_STALE_AFTER_MINUTES` 未更新时，后端会自动触发一次公开信号导入和合法数据源采集。
+- 当前实现是 `live-first`：
+  - `Google Trends` 优先尝试 KR RSS 公共趋势源
+  - `YouTube` 优先使用官方 Data API
+  - `TikTok Creative Center`、`Naver DataLab` 在无稳定 live 源时回退 snapshot
+- GitHub Pages 仍然只能做静态展示，无法承担实时更新。
+
 ## 技术栈
 - 前端与 API：Next.js 16 + TypeScript + Tailwind CSS
 - 数据库：PostgreSQL

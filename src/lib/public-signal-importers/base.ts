@@ -18,6 +18,6 @@ export interface PublicSignalCandidate {
 export interface PublicSignalImporter {
   name: Platform;
   displayName: string;
+  getMode(): "live" | "snapshot" | "hybrid" | "disabled";
   importSignals(): Promise<PublicSignalCandidate[]>;
 }
-

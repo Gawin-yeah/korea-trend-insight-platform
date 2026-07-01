@@ -5,7 +5,7 @@
 - 你自己先用
 - 先要一个真实公网网址
 - 暂时接受免费额度和空闲休眠限制
-- 先不上真实数据库，直接使用内置 seed 数据
+- 愿意先做动态部署，再逐步补全实时数据源
 
 ## 当前仓库已准备好的内容
 - `render.yaml`
@@ -15,7 +15,7 @@
 这意味着：
 - Render 可以直接从仓库读取部署配置
 - 不配置 `DATABASE_URL` 也能启动
-- 网站会以“正式网站 + seed 数据”模式运行
+- 但如果你要实时更新，必须配置数据库并保留 worker
 
 ## 免费版的重要限制
 根据 Render 官方文档：
@@ -27,14 +27,18 @@
 来源：
 - [Render Free Web Services](https://render.com/docs/free)
 
-## 推荐部署方式
-先只部署一个 `web service`，不要挂数据库。
+## 实时版推荐部署方式
+如果你的目标是“最新热点自动更新”，不要再走纯 seed 演示模式。
 
-这样优点是：
-- 成本最低
-- 成功率最高
-- 你能先拿到一个真实网址
-- 后面如果要接真实数据，再单独补 `DATABASE_URL`
+推荐至少部署：
+- 一个 `web service`
+- 一个 `worker`
+- 一个 PostgreSQL
+
+这样才能具备：
+- 定时采集
+- 最新时间戳落库
+- 页面自动轮询后看到新热点
 
 ## 部署步骤
 
@@ -54,15 +58,25 @@
 5. Render 会自动识别根目录的 `render.yaml`
 
 ### 4. 填环境变量
-首次部署时建议只填这几个：
-- `NEXT_PUBLIC_APP_URL`
-
-可先留空这些：
+如果要实时版，至少填这几个：
 - `DATABASE_URL`
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_AUTO_REFRESH_SECONDS`
+- `REALTIME_STALE_AFTER_MINUTES`
+
+建议再填这些 live 数据源变量：
 - `YOUTUBE_API_KEY`
 - `NAVER_CLIENT_ID`
 - `NAVER_CLIENT_SECRET`
+- `GOOGLE_TRENDS_RSS_URL`
+
+可后续补充：
 - `OPENAI_API_KEY`
+- `INSTAGRAM_ACCESS_TOKEN`
+- `INSTAGRAM_BUSINESS_ACCOUNT_ID`
+- `THREADS_ACCESS_TOKEN`
+- `THREADS_USER_ID`
+- `X_BEARER_TOKEN`
 
 ### 5. 选择 Free
 Render Blueprint 中的 `plan: free` 已经写在 `render.yaml` 里。
@@ -73,27 +87,12 @@ Render Blueprint 中的 `plan: free` 已经写在 `render.yaml` 里。
 ## 这次部署后的表现
 部署成功后你会得到：
 - 一个 `onrender.com` 的公网地址
-- 真实可访问网站
+- 动态可访问网站
+- Dashboard 自动轮询
+- 数据过期后自动触发刷新
 - 首页、趋势详情页、来源链接、导出功能都可访问
 
-但当前版本：
-- 不会持久化人工补证据
-- 不会跑真实数据库写入
-- 更像“正式公网演示站”
-
-## 什么时候再加数据库
-当你需要：
-- 人工证据持久化
-- 趋势审核持久化
-- 定时导入真实数据
-
-再补：
-- `DATABASE_URL`
-- 一个长期可用的 Postgres
-
-## 为什么我现在推荐这个版本
-因为这条路径最接近你要的：
-- 是正式网站
-- 真能上线
-- 免费可跑
-- 操作最少
+## 现实限制
+- Render 免费实例会休眠，所以“实时”更准确地说是“自动更新的动态站”，不是 24x7 无冷启动的企业级监控。
+- 没有 `YOUTUBE_API_KEY`、`NAVER_*` 等变量时，系统会退回 snapshot 或 demo 数据，不会凭空生成韩国最新热点。
+- GitHub Pages 不适合这类实时需求。

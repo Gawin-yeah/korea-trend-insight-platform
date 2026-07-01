@@ -7,13 +7,21 @@ import {
 } from "../../../db/seed-data";
 import { appConfig } from "@/lib/config";
 import { isDatabaseConfigured, query } from "@/lib/db";
+import { getRealtimeRefreshState } from "@/lib/pipeline/ingest";
+import { publicSignalImporterRegistry } from "@/lib/public-signal-importers/registry";
 import { publicTrendSites } from "@/lib/public-trend-sites";
+import {
+  getAutoRefreshIntervalSeconds,
+  getRealtimeStaleAfterMinutes
+} from "@/lib/site";
 import { getSourceCapabilities } from "@/lib/sources/catalog";
+import { sourceRegistry } from "@/lib/sources/source-registry";
 import type {
   Category,
   DashboardData,
   EvidenceRecord,
   PublicTrendSite,
+  RealtimeStatus,
   SourceCapability,
   TrendCluster,
   TrendDailyMetric,
@@ -293,11 +301,71 @@ function buildPublicSignalSummary(signals: TrendSignal[]) {
   }));
 }
 
+function buildRealtimeStatus(input: {
+  mode: RealtimeStatus["mode"];
+  latestDataAt?: string | null;
+  latestMentionAt?: string | null;
+  latestSignalAt?: string | null;
+  lastSuccessfulRefreshAt?: string | null;
+  lastRefreshStartedAt?: string | null;
+  lastRefreshMessage?: string | null;
+}) {
+  const refreshIntervalSeconds = getAutoRefreshIntervalSeconds();
+  const staleAfterMinutes = getRealtimeStaleAfterMinutes();
+  const activeSources = new Set<RealtimeStatus["activeSources"][number]>();
+  const snapshotSources = new Set<RealtimeStatus["snapshotSources"][number]>();
+
+  const liveSourceEnvChecks: Partial<Record<RealtimeStatus["activeSources"][number], boolean>> = {
+    youtube: Boolean(process.env.YOUTUBE_API_KEY),
+    naver: Boolean(process.env.NAVER_CLIENT_ID && process.env.NAVER_CLIENT_SECRET),
+    instagram_authorized: Boolean(
+      process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID
+    ),
+    threads_authorized: Boolean(
+      process.env.THREADS_ACCESS_TOKEN && process.env.THREADS_USER_ID
+    ),
+    x_api: Boolean(process.env.X_BEARER_TOKEN)
+  };
+
+  for (const adapter of sourceRegistry) {
+    if (liveSourceEnvChecks[adapter.name]) {
+      activeSources.add(adapter.name);
+    }
+  }
+
+  for (const importer of publicSignalImporterRegistry) {
+    const mode = importer.getMode();
+    if (mode === "live" || mode === "hybrid") {
+      activeSources.add(importer.name);
+    }
+    if (mode === "snapshot" || mode === "hybrid") {
+      snapshotSources.add(importer.name);
+    }
+  }
+
+  return {
+    mode: input.mode,
+    realtimeEnabled: input.mode === "dynamic_live",
+    autoRefreshEnabled: input.mode !== "static_demo",
+    refreshIntervalSeconds,
+    staleAfterMinutes,
+    latestDataAt: input.latestDataAt || null,
+    latestMentionAt: input.latestMentionAt || null,
+    latestSignalAt: input.latestSignalAt || null,
+    lastSuccessfulRefreshAt: input.lastSuccessfulRefreshAt || null,
+    lastRefreshStartedAt: input.lastRefreshStartedAt || null,
+    lastRefreshMessage: input.lastRefreshMessage || null,
+    activeSources: Array.from(activeSources),
+    snapshotSources: Array.from(snapshotSources)
+  } satisfies RealtimeStatus;
+}
+
 function buildDashboardFromMemory(
   clusters: TrendCluster[],
   signals: TrendSignal[],
   mentions: TrendMention[] = [],
-  evidences: EvidenceRecord[] = []
+  evidences: EvidenceRecord[] = [],
+  realtimeStatus?: RealtimeStatus
 ): DashboardData {
   const clustersWithLinks = withTopSourceLinks(clusters, {
     mentions,
@@ -352,7 +420,19 @@ function buildDashboardFromMemory(
       count
     })),
     evidenceCoverageSummary: buildEvidenceCoverageSummary(clustersWithLinks),
-    publicSignalSummary: buildPublicSignalSummary(signals)
+    publicSignalSummary: buildPublicSignalSummary(signals),
+    realtimeStatus:
+      realtimeStatus ||
+      buildRealtimeStatus({
+        mode: "dynamic_demo",
+        latestDataAt:
+          signals[0]?.collectedAt || mentions[0]?.collectedAt || new Date().toISOString(),
+        latestMentionAt: mentions[0]?.collectedAt || null,
+        latestSignalAt: signals[0]?.collectedAt || null,
+        lastSuccessfulRefreshAt: null,
+        lastRefreshStartedAt: null,
+        lastRefreshMessage: "当前未连接数据库，展示的是本地演示数据。"
+      })
   };
 }
 
@@ -394,7 +474,17 @@ export async function getDashboardData(): Promise<DashboardData> {
     const signals = signalResult.rows.map((row) => mapSignal(row as Record<string, unknown>));
     const mentions = mentionResult.rows.map((row) => mapMention(row as Record<string, unknown>));
     const evidences = evidenceResult.rows.map((row) => mapEvidence(row as Record<string, unknown>));
-    return buildDashboardFromMemory(clusters, signals, mentions, evidences);
+    const refreshState = await getRealtimeRefreshState();
+    const realtimeStatus = buildRealtimeStatus({
+      mode: refreshState.latestDataAt ? "dynamic_live" : "dynamic_demo",
+      latestDataAt: refreshState.latestDataAt,
+      latestMentionAt: refreshState.latestMentionAt,
+      latestSignalAt: refreshState.latestSignalAt,
+      lastSuccessfulRefreshAt: refreshState.lastSuccessfulRefreshAt,
+      lastRefreshStartedAt: refreshState.lastRefreshStartedAt,
+      lastRefreshMessage: refreshState.lastRefreshMessage
+    });
+    return buildDashboardFromMemory(clusters, signals, mentions, evidences, realtimeStatus);
   } catch {
     return buildDashboardFromMemory(seedClusters, seedSignals, seedMentions, seedEvidences);
   }
