@@ -14,11 +14,6 @@ BEGIN
   END IF;
 END $$;
 
-ALTER TYPE platform_type ADD VALUE IF NOT EXISTS 'youtube_charts';
-ALTER TYPE platform_type ADD VALUE IF NOT EXISTS 'tiktok_creative_center';
-ALTER TYPE platform_type ADD VALUE IF NOT EXISTS 'naver_datalab';
-ALTER TYPE platform_type ADD VALUE IF NOT EXISTS 'manual_research';
-
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'lifecycle_stage') THEN
