@@ -15,7 +15,7 @@
 这意味着：
 - Render 可以直接从仓库读取部署配置
 - 不配置 `DATABASE_URL` 也能启动
-- 但如果你要实时更新，必须配置数据库并保留 worker
+- 免费版默认走 `web + postgres`，不依赖独立 worker
 
 ## 免费版的重要限制
 根据 Render 官方文档：
@@ -27,18 +27,22 @@
 来源：
 - [Render Free Web Services](https://render.com/docs/free)
 
-## 实时版推荐部署方式
+## 免费实时版推荐部署方式
 如果你的目标是“最新热点自动更新”，不要再走纯 seed 演示模式。
 
-推荐至少部署：
+免费版推荐部署：
 - 一个 `web service`
-- 一个 `worker`
-- 一个 PostgreSQL
+- 一个 `PostgreSQL`
 
-这样才能具备：
-- 定时采集
+这样可以具备：
+- Dashboard 自动轮询
+- 数据过期时由 Web 请求自动触发刷新
 - 最新时间戳落库
-- 页面自动轮询后看到新热点
+
+说明：
+- Render 当前免费方案下，`Background Worker` 可能不可用。
+- 所以这份仓库的免费 Blueprint 默认不再创建 worker，而是使用“请求驱动刷新”。
+- 如果后续升级到付费方案，再把独立 worker / cron 恢复即可。
 
 ## 部署步骤
 
@@ -59,7 +63,6 @@
 
 ### 4. 填环境变量
 如果要实时版，至少填这几个：
-- `DATABASE_URL`
 - `NEXT_PUBLIC_APP_URL`
 - `NEXT_PUBLIC_AUTO_REFRESH_SECONDS`
 - `REALTIME_STALE_AFTER_MINUTES`
@@ -93,6 +96,6 @@ Render Blueprint 中的 `plan: free` 已经写在 `render.yaml` 里。
 - 首页、趋势详情页、来源链接、导出功能都可访问
 
 ## 现实限制
-- Render 免费实例会休眠，所以“实时”更准确地说是“自动更新的动态站”，不是 24x7 无冷启动的企业级监控。
+- Render 免费实例会休眠，所以“实时”更准确地说是“自动刷新、按访问拉起更新的动态站”，不是 24x7 常驻 worker 的企业级监控。
 - 没有 `YOUTUBE_API_KEY`、`NAVER_*` 等变量时，系统会退回 snapshot 或 demo 数据，不会凭空生成韩国最新热点。
 - GitHub Pages 不适合这类实时需求。

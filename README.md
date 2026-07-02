@@ -11,7 +11,7 @@
 - 趋势详情页：释义、使用语境、风险等级、公开趋势信号、人工证据、热度曲线。
 - 管理后台：审核、数据源配置、人工证据录入。
 - 合法数据源抽象：已提供 YouTube Data API 接口与授权型平台占位接入。
-- PostgreSQL 持久化、cron worker 定时任务、Docker Compose 本地运行。
+- PostgreSQL 持久化、请求驱动刷新 / 可选独立 worker、Docker Compose 本地运行。
 
 ## 零申请可运行路线
 - 公开趋势站点：`TikTok Creative Center`、`Google Trends`、`Naver DataLab`、`YouTube Charts/Explore`
@@ -26,6 +26,7 @@
 ## 实时更新模式
 - 动态部署时，Dashboard 会按 `NEXT_PUBLIC_AUTO_REFRESH_SECONDS` 自动轮询。
 - 当最新数据超过 `REALTIME_STALE_AFTER_MINUTES` 未更新时，后端会自动触发一次公开信号导入和合法数据源采集。
+- 在 Render 免费版部署中，默认采用 `web + postgres` 的请求驱动刷新，不强依赖独立 worker。
 - 当前实现是 `live-first`：
   - `Google Trends` 优先尝试 KR RSS 公共趋势源
   - `YouTube` 优先使用官方 Data API
